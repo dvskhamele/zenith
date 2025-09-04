@@ -2,7 +2,6 @@
 // Everything you need to know about the Facebook pages issue
 
 console.log(`
-====================================================
 🚀 ULTIMATE FACEBOOK INTEGRATION SUMMARY 🚀
 
 THE FACTS:
