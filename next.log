@@ -288,13 +288,3 @@ Error:
 
 Caused by:
     Syntax Error
-
-Import trace for requested module:
-./src/app/queue-approvals/page.tsx
- GET /_next/static/webpack/117ec5c23c6d7c84.webpack.hot-update.json 500 in 366ms
- ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
- GET /queue-approvals 500 in 14ms
- GET /queue-approvals 500 in 72ms
- GET / 500 in 15ms
- GET / 500 in 25ms
-[?25h
