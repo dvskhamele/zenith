@@ -20,5 +20,11 @@
     "files": [
       "static/chunks/_app-pages-browser_src_app_dashboard_simple-dashboard_tsx.js"
     ]
+  },
+  "app/dashboard/simple-dashboard.tsx -> ./visual-calendar": {
+    "id": "app/dashboard/simple-dashboard.tsx -> ./visual-calendar",
+    "files": [
+      "static/chunks/_app-pages-browser_src_app_dashboard_visual-calendar_tsx.js"
+    ]
   }
 }
