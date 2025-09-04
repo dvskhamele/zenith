@@ -9,7 +9,6 @@ console.log(`
    • API endpoint communication: PERFECT
    • User profile access: PERFECT
    • Pages list API call: PERFECT
-   • Error handling and messaging: PERFECT
 `);
 
 console.log(`
