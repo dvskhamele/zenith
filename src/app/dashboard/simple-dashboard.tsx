@@ -13,8 +13,27 @@ const VisualCalendar = dynamic(() => import('./visual-calendar'), {
   )
 });
 
+// Dynamically import Facebook components to avoid SSR issues
+const FacebookPagesManagement = dynamic(() => import('@/components/FacebookPagesManagement'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-full items-center justify-center">
+      <div className="text-white text-lg">Loading Facebook pages...</div>
+    </div>
+  )
+});
+
+const FacebookPostWidget = dynamic(() => import('@/components/FacebookPostWidget'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-full items-center justify-center">
+      <div className="text-white text-lg">Loading Facebook post widget...</div>
+    </div>
+  )
+});
+
 export default function SimpleDashboard() {
-  const [activeTab, setActiveTab] = useState<'calendar' | 'analytics' | 'settings'>('calendar');
+  const [activeTab, setActiveTab] = useState<'calendar' | 'analytics' | 'settings' | 'facebook-pages' | 'facebook-post'>('calendar');
 
   return (
     <div className="flex h-screen bg-gray-900">
@@ -31,6 +50,18 @@ export default function SimpleDashboard() {
             className={`w-full text-left px-4 py-2 rounded-md mb-2 ${activeTab === 'calendar' ? 'bg-blue-600' : 'hover:bg-gray-700'}`}
           >
             Calendar
+          </button>
+          <button 
+            onClick={() => setActiveTab('facebook-pages')}
+            className={`w-full text-left px-4 py-2 rounded-md mb-2 ${activeTab === 'facebook-pages' ? 'bg-blue-600' : 'hover:bg-gray-700'}`}
+          >
+            Facebook Pages
+          </button>
+          <button 
+            onClick={() => setActiveTab('facebook-post')}
+            className={`w-full text-left px-4 py-2 rounded-md mb-2 ${activeTab === 'facebook-post' ? 'bg-blue-600' : 'hover:bg-gray-700'}`}
+          >
+            Post to Facebook
           </button>
           <button 
             onClick={() => setActiveTab('analytics')}
@@ -53,6 +84,8 @@ export default function SimpleDashboard() {
         <header className="bg-gray-800 text-white p-4 flex justify-between items-center">
           <h2 className="text-xl font-semibold">
             {activeTab === 'calendar' && 'Content Calendar'}
+            {activeTab === 'facebook-pages' && 'Facebook Pages'}
+            {activeTab === 'facebook-post' && 'Post to Facebook'}
             {activeTab === 'analytics' && 'Analytics'}
             {activeTab === 'settings' && 'Settings'}
           </h2>
@@ -69,6 +102,16 @@ export default function SimpleDashboard() {
         {/* Content Area */}
         <main className="flex-1 overflow-auto">
           {activeTab === 'calendar' && <VisualCalendar />}
+          {activeTab === 'facebook-pages' && (
+            <div className="p-8">
+              <FacebookPagesManagement />
+            </div>
+          )}
+          {activeTab === 'facebook-post' && (
+            <div className="p-8 max-w-4xl">
+              <FacebookPostWidget />
+            </div>
+          )}
           {activeTab === 'analytics' && (
             <div className="p-8">
               <h3 className="text-xl text-white mb-4">Analytics Dashboard</h3>
