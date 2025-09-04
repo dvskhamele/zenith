@@ -1,13 +1,13 @@
 const { spawn } = require('child_process');
 const localtunnel = require('localtunnel');
 
-// Start the Next.js development server on a different port
-const nextServer = spawn('npx', ['next', 'dev', '-p', '3003'], {
+// Start the Next.js development server on port 9999
+const nextServer = spawn('npx', ['next', 'dev', '-p', '9999'], {
   stdio: 'inherit',
   shell: true
 });
 
-console.log('Starting Next.js development server on port 3003...');
+console.log('Starting Next.js development server on port 9999...');
 
 // When the server is ready, start localtunnel
 nextServer.on('spawn', async () => {
@@ -21,7 +21,7 @@ nextServer.on('spawn', async () => {
         await new Promise(resolve => setTimeout(resolve, 3000));
         
         const tunnel = await localtunnel({ 
-          port: 3003,
+          port: 9999,
           subdomain: 'zenith-signimus' // This should match the redirect URL in auth.ts
         });
         
