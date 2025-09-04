@@ -1,9 +1,5 @@
 console.log(`
-🚀 ULTIMATE FACEBOOK INTEGRATION SUMMARY 🚀
-
-THE FACTS:
-────────────────────────────────────────────────────
-`);
+🚀 ULTIMATE FACEBOOK INTEGRATION SUMMARY 🚀`);
 
 console.log(`
 ✅ WHAT'S WORKING:
