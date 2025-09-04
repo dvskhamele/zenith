@@ -15,10 +15,28 @@
     "id": "../node_modules/@supabase/storage-js/dist/module/lib/helpers.js -> @supabase/node-fetch",
     "files": []
   },
-  "app/dashboard/page.tsx -> ./dashboard-content": {
-    "id": "app/dashboard/page.tsx -> ./dashboard-content",
+  "app/dashboard/page.tsx -> ./simple-dashboard": {
+    "id": "app/dashboard/page.tsx -> ./simple-dashboard",
     "files": [
-      "static/chunks/_app-pages-browser_src_app_dashboard_dashboard-content_tsx.js"
+      "static/chunks/_app-pages-browser_src_app_dashboard_simple-dashboard_tsx.js"
+    ]
+  },
+  "app/dashboard/simple-dashboard.tsx -> ./visual-calendar": {
+    "id": "app/dashboard/simple-dashboard.tsx -> ./visual-calendar",
+    "files": [
+      "static/chunks/_app-pages-browser_src_app_dashboard_visual-calendar_tsx.js"
+    ]
+  },
+  "app/dashboard/simple-dashboard.tsx -> @/components/FacebookPagesManagement": {
+    "id": "app/dashboard/simple-dashboard.tsx -> @/components/FacebookPagesManagement",
+    "files": [
+      "static/chunks/_app-pages-browser_src_components_FacebookPagesManagement_tsx.js"
+    ]
+  },
+  "app/dashboard/simple-dashboard.tsx -> @/components/FacebookPostWidget": {
+    "id": "app/dashboard/simple-dashboard.tsx -> @/components/FacebookPostWidget",
+    "files": [
+      "static/chunks/_app-pages-browser_src_components_FacebookPostWidget_tsx.js"
     ]
   }
 }
