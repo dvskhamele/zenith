@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Facebook Token Debugger</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 4px; }
+        .token-info { background: #e3f2fd; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e9; color: #2e7d32; }
+        button { background: #1976d2; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #1565c0; }
+        input { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; }
+        pre { background: #f8f8f8; padding: 10px; overflow: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Facebook Token Debugger</h1>
+        
+        <div class="section">
+            <h2>1. Check LocalStorage Tokens</h2>
+            <button onclick="checkTokens()">Check Tokens</button>
+            <div id="tokens-result"></div>
+        </div>
+        
+        <div class="section">
+            <h2>2. Test Facebook Token</h2>
+            <button onclick="testToken()">Test Token</button>
+            <div id="test-result"></div>
+        </div>
+        
+        <div class="section">
+            <h2>3. Test Pages Access</h2>
+            <button onclick="testPages()">Test Pages</button>
+            <div id="pages-result"></div>
+        </div>
+        
+        <div class="section">
+            <h2>4. Manual Token Entry</h2>
+            <input type="text" id="manual-token" placeholder="Enter Facebook access token">
+            <button onclick="setToken()">Set Token</button>
+            <div id="set-token-result"></div>
+        </div>
+        
+        <div class="section">
+            <h2>5. Clear Tokens</h2>
+            <button onclick="clearTokens()">Clear All Tokens</button>
+            <div id="clear-result"></div>
+        </div>
+    </div>
+
+    <script>
+        function displayResult(elementId, content, className = '') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = content;
+            element.className = className;
+        }
+        
+        function checkTokens() {
+            if (typeof localStorage === 'undefined') {
+                displayResult('tokens-result', 'LocalStorage not available', 'error');
+                return;
+            }
+            
+            const facebookToken = localStorage.getItem('facebook_access_token');
+            const authCompleted = localStorage.getItem('facebook_auth_completed');
+            const supabaseToken = localStorage.getItem('supabase_access_token');
+            
+            let result = '<h3>Token Status:</h3>';
+            result += `<p>Facebook Access Token: ${facebookToken ? `Found (${facebookToken.length} chars)` : 'Not found'}</p>`;
+            result += `<p>Facebook Auth Completed: ${authCompleted || 'Not found'}</p>`;
+            result += `<p>Supabase Access Token: ${supabaseToken ? `Found (${supabaseToken.length} chars)` : 'Not found'}</p>`;
+            
+            if (facebookToken) {
+                result += `<p><strong>Token preview:</strong> ${facebookToken.substring(0, 50)}${facebookToken.length > 50 ? '...' : ''}</p>`;
+            }
+            
+            displayResult('tokens-result', result, facebookToken ? 'success' : 'error');
+        }
+        
+        function testToken() {
+            const token = localStorage.getItem('facebook_access_token');
+            if (!token) {
+                displayResult('test-result', 'No Facebook token found. Please set a token first.', 'error');
+                return;
+            }
+            
+            displayResult('test-result', 'Testing token...', '');
+            
+            fetch(`https://graph.facebook.com/v19.0/me?access_token=${token}&fields=id,name,email`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        displayResult('test-result', `<h3>Token Invalid:</h3><pre>${JSON.stringify(data.error, null, 2)}</pre>`, 'error');
+                    } else {
+                        displayResult('test-result', `<h3>Token Valid:</h3><p>User: ${data.name} (ID: ${data.id})</p>`, 'success');
+                    }
+                })
+                .catch(err => {
+                    displayResult('test-result', `<h3>Error:</h3><pre>${err.message}</pre>`, 'error');
+                });
+        }
+        
+        function testPages() {
+            const token = localStorage.getItem('facebook_access_token');
+            if (!token) {
+                displayResult('pages-result', 'No Facebook token found. Please set a token first.', 'error');
+                return;
+            }
+            
+            displayResult('pages-result', 'Fetching pages...', '');
+            
+            fetch(`https://graph.facebook.com/v19.0/me/accounts?access_token=${token}&fields=name,id,category,picture,fan_count`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        displayResult('pages-result', `<h3>Pages Access Failed:</h3><pre>${JSON.stringify(data.error, null, 2)}</pre>`, 'error');
+                    } else {
+                        const pagesCount = data.data ? data.data.length : 0;
+                        let result = `<h3>Pages Found: ${pagesCount}</h3>`;
+                        if (pagesCount > 0) {
+                            result += '<ul>';
+                            data.data.forEach(page => {
+                                result += `<li>${page.name} (${page.category}) - ID: ${page.id}</li>`;
+                            });
+                            result += '</ul>';
+                        }
+                        displayResult('pages-result', result, pagesCount > 0 ? 'success' : '');
+                    }
+                })
+                .catch(err => {
+                    displayResult('pages-result', `<h3>Error:</h3><pre>${err.message}</pre>`, 'error');
+                });
+        }
+        
+        function setToken() {
+            const token = document.getElementById('manual-token').value.trim();
+            if (!token) {
+                displayResult('set-token-result', 'Please enter a token', 'error');
+                return;
+            }
+            
+            try {
+                localStorage.setItem('facebook_access_token', token);
+                localStorage.setItem('facebook_auth_completed', 'true');
+                displayResult('set-token-result', 'Token set successfully!', 'success');
+                checkTokens(); // Refresh the tokens display
+            } catch (err) {
+                displayResult('set-token-result', `Error setting token: ${err.message}`, 'error');
+            }
+        }
+        
+        function clearTokens() {
+            try {
+                localStorage.removeItem('facebook_access_token');
+                localStorage.removeItem('facebook_auth_completed');
+                localStorage.removeItem('supabase_access_token');
+                localStorage.removeItem('supabase_refresh_token');
+                displayResult('clear-result', 'All tokens cleared!', 'success');
+                checkTokens(); // Refresh the tokens display
+            } catch (err) {
+                displayResult('clear-result', `Error clearing tokens: ${err.message}`, 'error');
+            }
+        }
+        
+        // Run initial check
+        if (typeof localStorage !== 'undefined') {
+            checkTokens();
+        }
+    </script>
+</body>
+</html>

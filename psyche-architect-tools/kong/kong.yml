@@ -1,0 +1,22 @@
+_format_version: "2.1"
+services:
+  - name: auth
+    url: http://supabase_auth:9999 # Default auth port
+    routes:
+      - paths:
+          - /auth
+  - name: storage
+    url: http://supabase_storage:5000 # Default storage port
+    routes:
+      - paths:
+          - /storage
+  - name: realtime
+    url: http://supabase_realtime:4000 # Default realtime port
+    routes:
+      - paths:
+          - /realtime
+  - name: functions
+    url: http://supabase_functions:54321 # Default functions port
+    routes:
+      - paths:
+          - /functions

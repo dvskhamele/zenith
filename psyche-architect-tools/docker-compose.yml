@@ -1,0 +1,160 @@
+version: '3.8'
+
+networks:
+  supabase:
+    driver: bridge
+
+volumes:
+  db_data:
+  storage_data:
+
+services:
+  db:
+    image: postgres:15.1-alpine
+    container_name: supabase_db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - supabase
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -h localhost -p 5432"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  kong:
+    image: kong:2.8.1-alpine
+    container_name: supabase_kong
+    restart: always
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: "/opt/kong/kong.yml"
+      KONG_DNS_ORDER: "LAST,A,CNAME"
+      KONG_PLUGINS: "request-transformer,cors,key-auth"
+    volumes:
+      - ./kong/kong.yml:/opt/kong/kong.yml
+    networks:
+      - supabase
+    ports:
+      - "8000:8000"
+      - "8443:8443"
+      - "8001:8001"
+      - "8444:8444"
+    depends_on:
+      db:
+        condition: service_healthy
+      auth:
+        condition: service_healthy
+      rest:
+        condition: service_healthy
+      storage:
+        condition: service_healthy
+      realtime:
+        condition: service_healthy
+
+  auth:
+    image: supabase/gotrue:v2.30.0
+    container_name: supabase_auth
+    restart: always
+    environment:
+      GOTRUE_API_HOST: "0.0.0.0"
+      GOTRUE_API_PORT: "9999"
+      GOTRUE_DB_DRIVER: "postgres"
+      GOTRUE_DB_DATABASE_URL: "postgresql://postgres:postgres@db:5432/postgres"
+      GOTRUE_SITE_URL: "http://localhost:3000"
+      GOTRUE_JWT_SECRET: "super-secret-jwt-token-with-at-least-32-characters-long"
+      GOTRUE_MAILER_AUTOCONFIRM: "true"
+    networks:
+      - supabase
+    depends_on:
+      db:
+        condition: service_healthy
+
+  rest:
+    image: postgrest/postgrest:v13.0.5
+    container_name: supabase_rest
+    restart: always
+    environment:
+      PGRST_DB_URI: "postgresql://postgres:postgres@db:5432/postgres"
+      PGRST_DB_SCHEMA: "public,storage"
+      PGRST_DB_ANON_ROLE: "anon"
+      PGRST_JWT_SECRET: "super-secret-jwt-token-with-at-least-32-characters-long"
+    networks:
+      - supabase
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  storage:
+    image: supabase/storage-api:v0.29.0
+    container_name: supabase_storage
+    restart: always
+    environment:
+      STORAGE_BACKEND: "file"
+      FILE_STORAGE_BACKEND_PATH: "/var/lib/storage"
+      TENANT_ID: "stub"
+      REGION: "stub"
+      GLOBAL_S3_BUCKET: "stub"
+      PGRST_URL: "http://rest:3000"
+      ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0"
+      SERVICE_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.M-J8lyb3lS_3Z4x1i_3h2AFXX0ux3lVjN3YK4A_1234"
+    volumes:
+      - storage_data:/var/lib/storage
+    networks:
+      - supabase
+    depends_on:
+      db:
+        condition: service_healthy
+      rest:
+        condition: service_healthy
+
+  realtime:
+    image: supabase/realtime:v2.1.0
+    container_name: supabase_realtime
+    restart: always
+    environment:
+      DB_HOST: "db"
+      DB_PORT: "5432"
+      DB_USER: "postgres"
+      DB_PASSWORD: "postgres"
+      DB_NAME: "postgres"
+      PORT: "4000"
+      JWT_SECRET: "super-secret-jwt-token-with-at-least-32-characters-long"
+      SECURE_CHANNELS: "true"
+      SLOT_NAME: "supabase_realtime"
+    networks:
+      - supabase
+    depends_on:
+      db:
+        condition: service_healthy
+
+  functions:
+    image: supabase/edge-runtime:v1.10.0
+    container_name: supabase_functions
+    restart: always
+    environment:
+      SUPABASE_URL: "http://kong:8000"
+      SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0"
+      SUPABASE_SERVICE_ROLE_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.M-J8lyb3lS_3Z4x1i_3h2AFXX0ux3lVjN3YK4A_1234"
+      JWT_SECRET: "super-secret-jwt-token-with-at-least-32-characters-long"
+    volumes:
+      - ./functions:/home/deno/functions
+    networks:
+      - supabase
+    ports:
+      - "54321:54321"
+    depends_on:
+      kong:
+        condition: service_started

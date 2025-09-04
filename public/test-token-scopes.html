@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Facebook Token Scope Tester</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 4px; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e9; color: #2e7d32; }
+        .warning { background: #fff3e0; color: #ef6c00; }
+        button { background: #1976d2; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #1565c0; }
+        pre { background: #f8f8f8; padding: 10px; overflow: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Facebook Token Scope Tester</h1>
+        
+        <div class="section">
+            <h2>Check Token Scopes</h2>
+            <button onclick="checkScopes()">Check Scopes</button>
+            <div id="scopes-result"></div>
+        </div>
+        
+        <div class="section">
+            <h2>Test Posting to User Feed</h2>
+            <textarea id="post-content" placeholder="Enter content to post" style="width: 100%; height: 100px; padding: 10px;"></textarea>
+            <button onclick="testUserFeedPost()">Post to User Feed</button>
+            <div id="post-result"></div>
+        </div>
+    </div>
+
+    <script>
+        function displayResult(elementId, content, className = '') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = content;
+            element.className = className;
+        }
+        
+        function checkScopes() {
+            const token = localStorage.getItem('facebook_access_token');
+            if (!token) {
+                displayResult('scopes-result', 'No Facebook token found', 'error');
+                return;
+            }
+            
+            displayResult('scopes-result', 'Checking token scopes...', '');
+            
+            fetch(`https://graph.facebook.com/v19.0/debug_token?input_token=${token}&access_token=${token}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        displayResult('scopes-result', `<h3>Error:</h3><pre>${JSON.stringify(data.error, null, 2)}</pre>`, 'error');
+                        return;
+                    }
+                    
+                    let result = '<h3>Token Information:</h3>';
+                    result += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    
+                    if (data.data && data.data.scopes) {
+                        result += '<h3>Token Scopes:</h3><ul>';
+                        data.data.scopes.forEach(scope => {
+                            result += `<li>${scope}</li>`;
+                        });
+                        result += '</ul>';
+                        
+                        // Check for required scopes
+                        const hasPagesReadEngagement = data.data.scopes.includes('pages_read_engagement');
+                        const hasPagesManagePosts = data.data.scopes.includes('pages_manage_posts');
+                        const hasPublishToGroups = data.data.scopes.includes('publish_to_groups');
+                        
+                        result += '<h3>Permission Check:</h3>';
+                        if (hasPagesReadEngagement && hasPagesManagePosts) {
+                            result += '<p class="success">✅ Token has required page permissions for posting to pages</p>';
+                        } else if (hasPublishToGroups) {
+                            result += '<p class="success">✅ Token has group posting permission</p>';
+                        } else {
+                            result += '<p class="warning">⚠️ Token missing required permissions for posting</p>';
+                            result += '<p>You need either:</p><ul>';
+                            result += '<li><code>publish_to_groups</code> permission, OR</li>';
+                            result += '<li>Both <code>pages_read_engagement</code> AND <code>pages_manage_posts</code> permissions</li>';
+                            result += '</ul>';
+                        }
+                    }
+                    
+                    displayResult('scopes-result', result);
+                })
+                .catch(err => {
+                    displayResult('scopes-result', `<h3>Error:</h3><pre>${err.message}</pre>`, 'error');
+                });
+        }
+        
+        function testUserFeedPost() {
+            const token = localStorage.getItem('facebook_access_token');
+            if (!token) {
+                displayResult('post-result', 'No Facebook token found', 'error');
+                return;
+            }
+            
+            const content = document.getElementById('post-content').value.trim();
+            if (!content) {
+                displayResult('post-result', 'Please enter content to post', 'error');
+                return;
+            }
+            
+            displayResult('post-result', 'Posting to user feed...', '');
+            
+            // Post to user's feed (me/feed)
+            fetch(`https://graph.facebook.com/v19.0/me/feed?message=${encodeURIComponent(content)}&access_token=${token}`, {
+                method: 'POST'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        displayResult('post-result', `<h3>Post Failed:</h3><pre>${JSON.stringify(data.error, null, 2)}</pre>`, 'error');
+                    } else {
+                        displayResult('post-result', `<h3>Post Successful:</h3><pre>${JSON.stringify(data, null, 2)}</pre>`, 'success');
+                    }
+                })
+                .catch(err => {
+                    displayResult('post-result', `<h3>Error:</h3><pre>${err.message}</pre>`, 'error');
+                });
+        }
+    </script>
+</body>
+</html>

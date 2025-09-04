@@ -1,0 +1,3 @@
+Missing Dependencies for Psyche-Architect:
+- AIRTABLE_API_KEY: Not found in project.config. pSEO module will use a local JSON file as a fallback.
+- MEDIUM_API_TOKEN: Not found in project.config. UGC-to-Medium publishing is blocked.

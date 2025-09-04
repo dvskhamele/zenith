@@ -1,0 +1,46 @@
+{
+  "timestamp": "2025-09-01T13:13:26.191Z",
+  "url": "/auth/callback",
+  "query": {},
+  "headers": {
+    "host": "localhost:9999",
+    "connection": "keep-alive",
+    "upgrade-insecure-requests": "1",
+    "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36",
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+    "sec-gpc": "1",
+    "accept-language": "en-GB,en;q=0.9",
+    "sec-fetch-site": "cross-site",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-dest": "document",
+    "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Brave\";v=\"139\", \"Chromium\";v=\"139\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"macOS\"",
+    "accept-encoding": "gzip, deflate, br, zstd",
+    "cookie": "ph_phc_fCgSHCQAoCzBIKGttKYCeCOGa0CFA9tUjY8gS0RBmrJ_posthog=%7B%22distinct_id%22%3A%2201990159-7185-79e2-a4d7-a4ab84bf1a8a%22%2C%22%24sesid%22%3A%5B1756732398082%2C%2201990569-1565-74ea-b59a-9818b1f47cfc%22%2C1756732396901%5D%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A3001%2F%22%7D%7D"
+  }
+}
+
+{
+  "timestamp": "2025-09-01T13:29:55.680Z",
+  "url": "/auth/callback",
+  "query": {},
+  "headers": {
+    "host": "localhost:9999",
+    "connection": "keep-alive",
+    "upgrade-insecure-requests": "1",
+    "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36",
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+    "sec-gpc": "1",
+    "accept-language": "en-GB,en;q=0.9",
+    "sec-fetch-site": "cross-site",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-dest": "document",
+    "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Brave\";v=\"139\", \"Chromium\";v=\"139\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"macOS\"",
+    "accept-encoding": "gzip, deflate, br, zstd",
+    "cookie": "ph_phc_fCgSHCQAoCzBIKGttKYCeCOGa0CFA9tUjY8gS0RBmrJ_posthog=%7B%22distinct_id%22%3A%2201990159-7185-79e2-a4d7-a4ab84bf1a8a%22%2C%22%24sesid%22%3A%5B1756733387565%2C%2201990569-1565-74ea-b59a-9818b1f47cfc%22%2C1756732396901%5D%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22http%3A%2F%2Flocalhost%3A3001%2F%22%7D%7D"
+  }
+}
+

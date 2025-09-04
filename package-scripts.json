@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "dev:tunnel": "node start-with-tunnel.js",
+    "tunnel": "node setup-tunnel.js",
+    "tunnel:random": "node setup-random-tunnel.js",
+    "tunnel:zenith": "node setup-zenith-tunnel.js",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  }
+}

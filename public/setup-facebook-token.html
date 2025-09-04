@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Facebook Token Setup</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 4px; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e9; color: #2e7d32; }
+        .info { background: #e3f2fd; color: #1565c0; }
+        button { background: #1976d2; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #1565c0; }
+        input, textarea { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; }
+        pre { background: #f8f8f8; padding: 10px; overflow: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Facebook Token Setup</h1>
+        <p>This page helps you set up your Facebook token for the Zenith application.</p>
+        
+        <div class="section">
+            <h2>1. Set Facebook Token</h2>
+            <p>Paste your Facebook access token below:</p>
+            <textarea id="facebook-token" rows="3" placeholder="Paste your Facebook access token here"></textarea>
+            <button onclick="setToken()">Set Token</button>
+            <div id="set-token-result"></div>
+        </div>
+        
+        <div class="section">
+            <h2>2. Verify Token</h2>
+            <button onclick="verifyToken()">Verify Token</button>
+            <div id="verify-token-result"></div>
+        </div>
+        
+        <div class="section">
+            <h2>3. Check All Tokens</h2>
+            <button onclick="checkAllTokens()">Check All Tokens</button>
+            <div id="check-tokens-result"></div>
+        </div>
+        
+        <div class="section">
+            <h2>4. Instructions</h2>
+            <div class="info">
+                <h3>How to get a Facebook token:</h3>
+                <ol>
+                    <li>Go to <a href="https://developers.facebook.com/tools/explorer/" target="_blank">Facebook Graph API Explorer</a></li>
+                    <li>Make sure you're logged into the same Facebook account that has your pages</li>
+                    <li>Click "Get Token" → "Get User Access Token"</li>
+                    <li>Select these permissions:
+                        <ul>
+                            <li>pages_show_list</li>
+                            <li>pages_read_engagement</li>
+                            <li>pages_manage_posts</li>
+                            <li>pages_manage_metadata</li>
+                            <li>pages_read_user_content</li>
+                        </ul>
+                    </li>
+                    <li>Click "Get Access Token"</li>
+                    <li>Copy the token and paste it above</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function displayResult(elementId, content, className = '') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = content;
+            element.className = className;
+        }
+        
+        function setToken() {
+            const token = document.getElementById('facebook-token').value.trim();
+            if (!token) {
+                displayResult('set-token-result', 'Please enter a token', 'error');
+                return;
+            }
+            
+            try {
+                localStorage.setItem('facebook_access_token', token);
+                localStorage.setItem('facebook_auth_completed', 'true');
+                displayResult('set-token-result', '✅ Token set successfully!', 'success');
+                document.getElementById('facebook-token').value = '';
+            } catch (err) {
+                displayResult('set-token-result', `❌ Error setting token: ${err.message}`, 'error');
+            }
+        }
+        
+        function verifyToken() {
+            const token = localStorage.getItem('facebook_access_token');
+            if (!token) {
+                displayResult('verify-token-result', '❌ No Facebook token found. Please set a token first.', 'error');
+                return;
+            }
+            
+            displayResult('verify-token-result', '🔍 Verifying token...', 'info');
+            
+            // Test basic user info
+            fetch(`https://graph.facebook.com/v19.0/me?access_token=${token}&fields=id,name,email`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        displayResult('verify-token-result', 
+                            `<h3>❌ Token Invalid</h3>
+                            <p>Error: ${data.error.message}</p>
+                            <p>Please get a new token and try again.</p>`, 
+                            'error');
+                    } else {
+                        // Test pages access
+                        fetch(`https://graph.facebook.com/v19.0/me/accounts?access_token=${token}&fields=name,id,category`)
+                            .then(response => response.json())
+                            .then(pagesData => {
+                                let pagesInfo = '';
+                                if (pagesData.error) {
+                                    pagesInfo = `<p>⚠️ Could not access pages: ${pagesData.error.message}</p>`;
+                                } else {
+                                    pagesInfo = `<p>✅ Found ${pagesData.data ? pagesData.data.length : 0} pages</p>`;
+                                    if (pagesData.data && pagesData.data.length > 0) {
+                                        pagesInfo += '<ul>';
+                                        pagesData.data.slice(0, 3).forEach(page => {
+                                            pagesInfo += `<li>${page.name} (${page.category})</li>`;
+                                        });
+                                        if (pagesData.data.length > 3) {
+                                            pagesInfo += `<li>... and ${pagesData.data.length - 3} more</li>`;
+                                        }
+                                        pagesInfo += '</ul>';
+                                    }
+                                }
+                                
+                                displayResult('verify-token-result', 
+                                    `<h3>✅ Token Valid</h3>
+                                    <p>User: ${data.name} (ID: ${data.id})</p>
+                                    ${pagesInfo}`, 
+                                    'success');
+                            })
+                            .catch(err => {
+                                displayResult('verify-token-result', 
+                                    `<h3>✅ Token Valid</h3>
+                                    <p>User: ${data.name} (ID: ${data.id})</p>
+                                    <p>⚠️ Could not check pages: ${err.message}</p>`, 
+                                    'success');
+                            });
+                    }
+                })
+                .catch(err => {
+                    displayResult('verify-token-result', `❌ Error verifying token: ${err.message}`, 'error');
+                });
+        }
+        
+        function checkAllTokens() {
+            if (typeof localStorage === 'undefined') {
+                displayResult('check-tokens-result', 'LocalStorage not available', 'error');
+                return;
+            }
+            
+            const facebookToken = localStorage.getItem('facebook_access_token');
+            const authCompleted = localStorage.getItem('facebook_auth_completed');
+            const supabaseToken = localStorage.getItem('supabase_access_token');
+            const refreshToken = localStorage.getItem('supabase_refresh_token');
+            
+            let result = '<h3>All Tokens:</h3>';
+            result += `<p><strong>Facebook Access Token:</strong> ${facebookToken ? `Found (${facebookToken.length} chars)` : 'Not found'}</p>`;
+            result += `<p><strong>Facebook Auth Completed:</strong> ${authCompleted || 'Not found'}</p>`;
+            result += `<p><strong>Supabase Access Token:</strong> ${supabaseToken ? `Found (${supabaseToken.length} chars)` : 'Not found'}</p>`;
+            result += `<p><strong>Supabase Refresh Token:</strong> ${refreshToken ? `Found (${refreshToken.length} chars)` : 'Not found'}</p>`;
+            
+            displayResult('check-tokens-result', result, facebookToken ? 'success' : 'error');
+        }
+        
+        // Run initial check
+        if (typeof localStorage !== 'undefined') {
+            checkAllTokens();
+        }
+    </script>
+</body>
+</html>

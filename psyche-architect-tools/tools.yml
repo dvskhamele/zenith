@@ -1,0 +1,44 @@
+social_syndication:
+  - name: "Ayrshare"
+    api_key_name: "AYRSHARE_API_KEY"
+email_marketing: # For campaigns, newsletters
+  - name: "Brevo"
+    api_key_name: "BREVEO_API"
+  - name: "Sender.net"
+    api_key_name: "SENDER_NET_ID"
+email_transactional: # For one-to-one system emails
+  - name: "Resend"
+    api_key_name: "RESEND_API_KEY"
+  - name: "MailerJet"
+    api_key_name: "MAILERJET_API"
+content_management:
+  - name: "Sanity"
+    api_key_name: "SANITY_ID"
+analytics:
+  - name: "PostHog"
+    api_key_name: "POSTHOG_APIKEY"
+monitoring:
+  - name: "BetterStack"
+    api_key_name: "LOGTAILBETTERSTACK"
+  - name: "Uptime.com"
+    api_key_name: "UPTIME_ID"
+web_scraping:
+  - name: "Scraping Bee"
+    api_key_name: "SCRAPING_BEE_API"
+generative_ai:
+  - name: "Google Gemini"
+    api_key_name: "GEMINI_API_KEY"
+  - name: "Together AI"
+    api_key_name: "TOGETHERAI_KEY"
+notifications:
+  - name: "Novu"
+    api_key_name: "NOVU_API_KEY"
+search:
+  - name: "MeiliSearch"
+    api_key_name: "MEILISEARCH_API"
+document_processing:
+  - name: "Mindee"
+    api_key_name: "MINDEE_FULL_API_KEY"
+code_management:
+  - name: "GitHub"
+    api_key_name: "GITHUB_PERSONAL_TOKEN"

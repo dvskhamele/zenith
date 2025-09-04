@@ -1,0 +1,300 @@
+  ▲ Next.js 14.2.32
+  - Local:        http://localhost:9999
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1548ms
+ ○ Compiling /facebook-pages ...
+ ✓ Compiled /facebook-pages in 1314ms (605 modules)
+ GET /facebook-pages 200 in 1779ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 1148ms (594 modules)
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 838ms
+ ✓ Compiled /login in 180ms (604 modules)
+ GET /login 200 in 255ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 54ms
+ ○ Compiling /auth/callback ...
+ ✓ Compiled /auth/callback in 566ms (610 modules)
+ GET /auth/callback 200 in 696ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 58ms
+ ✓ Compiled /oauth-debug in 216ms (616 modules)
+ GET /oauth-debug 200 in 254ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 46ms
+ GET /facebook-pages 200 in 60ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 108ms
+ GET /login 200 in 21ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 29ms
+ GET /facebook-pages 200 in 18ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 26ms
+ GET /login 200 in 54ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 37ms
+ GET /login 200 in 26ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 38ms
+ GET /auth/callback 200 in 32ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 28ms
+ GET /login 200 in 21ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 59ms
+ GET /auth/callback 200 in 38ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 30ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ✓ Compiled in 548ms (623 modules)
+ GET /facebook-pages 200 in 283ms
+ ✓ Compiled /_not-found in 181ms (612 modules)
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 262ms
+ ✓ Compiled in 372ms (626 modules)
+ ✓ Compiled in 396ms (624 modules)
+ ✓ Compiled /auth/callback in 291ms (313 modules)
+ ✓ Compiled / in 218ms (623 modules)
+ GET / 200 in 304ms
+ GET /login 200 in 21ms
+ ✓ Compiled /_not-found in 152ms (626 modules)
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 227ms
+ GET /login 200 in 41ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 37ms
+ ✓ Compiled in 300ms (640 modules)
+ GET /login 200 in 92ms
+ GET /login 200 in 22ms
+ ✓ Compiled in 383ms (626 modules)
+ ✓ Compiled in 169ms (317 modules)
+ GET /login 200 in 38ms
+ ✓ Compiled in 345ms (626 modules)
+ ✓ Compiled /auth/callback in 110ms (313 modules)
+ GET /auth/callback 200 in 161ms
+ ✓ Compiled in 341ms (630 modules)
+ ✓ Compiled /_not-found in 161ms (619 modules)
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 198ms
+ GET /login 200 in 38ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 41ms
+ ✓ Compiled in 302ms (633 modules)
+ GET /auth/callback 200 in 54ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 36ms
+ ✓ Compiled in 320ms (633 modules)
+ GET /facebook-pages 200 in 75ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 62ms
+ GET /login 200 in 51ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 38ms
+ ✓ Compiled in 451ms (633 modules)
+ ✓ Compiled in 282ms (626 modules)
+ ✓ Compiled in 195ms (626 modules)
+ ✓ Compiled in 236ms (626 modules)
+ GET /login 200 in 108ms
+ ✓ Compiled /_not-found in 180ms (615 modules)
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 280ms
+ ✓ Compiled /auth/callback in 117ms (314 modules)
+ GET /auth/callback 200 in 166ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 32ms
+ ✓ Compiled in 369ms (633 modules)
+ ✓ Compiled in 269ms (626 modules)
+ ✓ Compiled / in 179ms (316 modules)
+ GET / 200 in 274ms
+ ✓ Compiled /_not-found in 230ms (622 modules)
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 295ms
+ GET /login 200 in 41ms
+ ✓ Compiled /auth/callback in 75ms (321 modules)
+ GET /auth/callback 200 in 143ms
+ GET /auth/callback 200 in 46ms
+ ✓ Compiled in 282ms (640 modules)
+ GET /auth/callback 200 in 89ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 46ms
+ GET /facebook-pages 200 in 43ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 31ms
+ GET / 200 in 29ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 64ms
+ ⨯ ./src/app/queue-approvals/page.tsx
+Error: 
+  [31mx[0m Expression expected
+   ,-[[36;1;4m/Users/test/Startups/zenith/src/app/queue-approvals/page.tsx[0m:1:1]
+ [2m1[0m | <!DOCTYPE html>
+   : [31;1m^[0m
+ [2m2[0m | <html lang="en">
+ [2m3[0m | <head>
+ [2m4[0m |     <meta charset="UTF-8">
+   `----
+
+  [31mx[0m Expected ';', '}' or <eof>
+   ,-[[36;1;4m/Users/test/Startups/zenith/src/app/queue-approvals/page.tsx[0m:1:1]
+ [2m1[0m | <!DOCTYPE html>
+   : [31;1m^^^^|^^^^[0m[33;1m ^^^^[0m
+   :     [31;1m`-- [31;1mThis is the expression part of an expression statement[0m[0m
+ [2m2[0m | <html lang="en">
+ [2m3[0m | <head>
+ [2m4[0m |     <meta charset="UTF-8">
+   `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/queue-approvals/page.tsx
+ ○ Compiling /queue-approvals ...
+ ⨯ ./src/app/queue-approvals/page.tsx
+Error: 
+  [31mx[0m Expression expected
+   ,-[[36;1;4m/Users/test/Startups/zenith/src/app/queue-approvals/page.tsx[0m:1:1]
+ [2m1[0m | <!DOCTYPE html>
+   : [31;1m^[0m
+ [2m2[0m | <html lang="en">
+ [2m3[0m | <head>
+ [2m4[0m |     <meta charset="UTF-8">
+   `----
+
+  [31mx[0m Expected ';', '}' or <eof>
+   ,-[[36;1;4m/Users/test/Startups/zenith/src/app/queue-approvals/page.tsx[0m:1:1]
+ [2m1[0m | <!DOCTYPE html>
+   : [31;1m^^^^|^^^^[0m[33;1m ^^^^[0m
+   :     [31;1m`-- [31;1mThis is the expression part of an expression statement[0m[0m
+ [2m2[0m | <html lang="en">
+ [2m3[0m | <head>
+ [2m4[0m |     <meta charset="UTF-8">
+   `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/queue-approvals/page.tsx
+ ⨯ ./src/app/queue-approvals/page.tsx
+Error: 
+  [31mx[0m Expression expected
+   ,-[[36;1;4m/Users/test/Startups/zenith/src/app/queue-approvals/page.tsx[0m:1:1]
+ [2m1[0m | <!DOCTYPE html>
+   : [31;1m^[0m
+ [2m2[0m | <html lang="en">
+ [2m3[0m | <head>
+ [2m4[0m |     <meta charset="UTF-8">
+   `----
+
+  [31mx[0m Expected ';', '}' or <eof>
+   ,-[[36;1;4m/Users/test/Startups/zenith/src/app/queue-approvals/page.tsx[0m:1:1]
+ [2m1[0m | <!DOCTYPE html>
+   : [31;1m^^^^|^^^^[0m[33;1m ^^^^[0m
+   :     [31;1m`-- [31;1mThis is the expression part of an expression statement[0m[0m
+ [2m2[0m | <html lang="en">
+ [2m3[0m | <head>
+ [2m4[0m |     <meta charset="UTF-8">
+   `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/queue-approvals/page.tsx
+ GET /queue-approvals 500 in 2041ms
+ ⨯ ./src/app/queue-approvals/page.tsx
+Error: 
+  [31mx[0m Expression expected
+   ,-[[36;1;4m/Users/test/Startups/zenith/src/app/queue-approvals/page.tsx[0m:1:1]
+ [2m1[0m | <!DOCTYPE html>
+   : [31;1m^[0m
+ [2m2[0m | <html lang="en">
+ [2m3[0m | <head>
+ [2m4[0m |     <meta charset="UTF-8">
+   `----
+
+  [31mx[0m Expected ';', '}' or <eof>
+   ,-[[36;1;4m/Users/test/Startups/zenith/src/app/queue-approvals/page.tsx[0m:1:1]
+ [2m1[0m | <!DOCTYPE html>
+   : [31;1m^^^^|^^^^[0m[33;1m ^^^^[0m
+   :     [31;1m`-- [31;1mThis is the expression part of an expression statement[0m[0m
+ [2m2[0m | <html lang="en">
+ [2m3[0m | <head>
+ [2m4[0m |     <meta charset="UTF-8">
+   `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/queue-approvals/page.tsx
+ GET /_next/static/webpack/117ec5c23c6d7c84.webpack.hot-update.json 500 in 562ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /queue-approvals 500 in 14ms
+ ✓ Compiled /_not-found in 656ms (850 modules)
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /_next/static/webpack/117ec5c23c6d7c84.webpack.hot-update.json 404 in 709ms
+ ⨯ ./src/app/queue-approvals/page.tsx
+Error: 
+  [31mx[0m Expression expected
+   ,-[[36;1;4m/Users/test/Startups/zenith/src/app/queue-approvals/page.tsx[0m:1:1]
+ [2m1[0m | <!DOCTYPE html>
+   : [31;1m^[0m
+ [2m2[0m | <html lang="en">
+ [2m3[0m | <head>
+ [2m4[0m |     <meta charset="UTF-8">
+   `----
+
+  [31mx[0m Expected ';', '}' or <eof>
+   ,-[[36;1;4m/Users/test/Startups/zenith/src/app/queue-approvals/page.tsx[0m:1:1]
+ [2m1[0m | <!DOCTYPE html>
+   : [31;1m^^^^|^^^^[0m[33;1m ^^^^[0m
+   :     [31;1m`-- [31;1mThis is the expression part of an expression statement[0m[0m
+ [2m2[0m | <html lang="en">
+ [2m3[0m | <head>
+ [2m4[0m |     <meta charset="UTF-8">
+   `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/queue-approvals/page.tsx
+ GET /queue-approvals 500 in 95ms
+ ○ Compiling /queue-approvals ...
+ ⨯ ./src/app/page.tsx:3:1
+Module not found: Can't resolve '@supabase/auth-helpers-nextjs'
+[0m [90m 1 |[39m [36mimport[39m { redirect } [36mfrom[39m [32m'next/navigation'[39m[33m;[39m[0m
+[0m [90m 2 |[39m [36mimport[39m { cookies } [36mfrom[39m [32m'next/headers'[39m[33m;[39m[0m
+[0m[31m[1m>[22m[39m[90m 3 |[39m [36mimport[39m { createServerComponentClient } [36mfrom[39m [32m'@supabase/auth-helpers-nextjs'[39m[33m;[39m[0m
+[0m [90m   |[39m [31m[1m^[22m[39m[0m
+[0m [90m 4 |[39m[0m
+[0m [90m 5 |[39m [36mexport[39m [36mdefault[39m [36masync[39m [36mfunction[39m [33mHomePage[39m() {[0m
+[0m [90m 6 |[39m   [36mconst[39m supabase [33m=[39m createServerComponentClient({ cookies })[33m;[39m[0m
+
+https://nextjs.org/docs/messages/module-not-found
+ GET /_next/static/webpack/117ec5c23c6d7c84.webpack.hot-update.json 500 in 625ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⨯ ./src/app/page.tsx:3:1
+Module not found: Can't resolve '@supabase/auth-helpers-nextjs'
+[0m [90m 1 |[39m [36mimport[39m { redirect } [36mfrom[39m [32m'next/navigation'[39m[33m;[39m[0m
+[0m [90m 2 |[39m [36mimport[39m { cookies } [36mfrom[39m [32m'next/headers'[39m[33m;[39m[0m
+[0m[31m[1m>[22m[39m[90m 3 |[39m [36mimport[39m { createServerComponentClient } [36mfrom[39m [32m'@supabase/auth-helpers-nextjs'[39m[33m;[39m[0m
+[0m [90m   |[39m [31m[1m^[22m[39m[0m
+[0m [90m 4 |[39m[0m
+[0m [90m 5 |[39m [36mexport[39m [36mdefault[39m [36masync[39m [36mfunction[39m [33mHomePage[39m() {[0m
+[0m [90m 6 |[39m   [36mconst[39m supabase [33m=[39m createServerComponentClient({ cookies })[33m;[39m[0m
+
+https://nextjs.org/docs/messages/module-not-found
+ GET /queue-approvals 500 in 88ms
+ ⨯ ./src/app/queue-approvals/page.tsx
+Error: 
+  [31mx[0m Expression expected
+   ,-[[36;1;4m/Users/test/Startups/zenith/src/app/queue-approvals/page.tsx[0m:1:1]
+ [2m1[0m | <!DOCTYPE html>
+   : [31;1m^[0m
+ [2m2[0m | <html lang="en">
+ [2m3[0m | <head>
+ [2m4[0m |     <meta charset="UTF-8">
+   `----
+
+  [31mx[0m Expected ';', '}' or <eof>
+   ,-[[36;1;4m/Users/test/Startups/zenith/src/app/queue-approvals/page.tsx[0m:1:1]
+ [2m1[0m | <!DOCTYPE html>
+   : [31;1m^^^^|^^^^[0m[33;1m ^^^^[0m
+   :     [31;1m`-- [31;1mThis is the expression part of an expression statement[0m[0m
+ [2m2[0m | <html lang="en">
+ [2m3[0m | <head>
+ [2m4[0m |     <meta charset="UTF-8">
+   `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/queue-approvals/page.tsx
+ GET /_next/static/webpack/117ec5c23c6d7c84.webpack.hot-update.json 500 in 366ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /queue-approvals 500 in 14ms
+ GET /queue-approvals 500 in 72ms
+ GET / 500 in 15ms
+ GET / 500 in 25ms
+[?25h

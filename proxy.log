@@ -1,0 +1,20 @@
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRNOTAVAIL: address not available 49.43.3.243:80
+    at Server.setupListenHandle [as _listen2] (node:net:1918:21)
+    at listenInCluster (node:net:1997:12)
+    at node:net:2206:7
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1976:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRNOTAVAIL',
+  errno: -49,
+  syscall: 'listen',
+  address: '49.43.3.243',
+  port: 80
+}
+
+Node.js v22.18.0

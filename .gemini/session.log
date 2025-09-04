@@ -1,0 +1,5 @@
+Psyche-Architect Protocol Initialized. Resuming in Phase 1: Tool Proliferation.
+
+Blocking Issues:
+- Persistent Docker Compose initialization failure for Supabase services: Even with the official docker-compose.yml and manual schema creation attempts, the Supabase stack (specifically the 'rest' service) remains unhealthy due to schema loading issues. This prevents the local Supabase environment from starting, which is crucial for building, testing, and deploying micro-tools (Supabase Edge Functions).
+- Inability to parse AST for deeper code analysis and vector embedding.
