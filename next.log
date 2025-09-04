@@ -283,5 +283,4 @@ Error:
    :     [31;1m`-- [31;1mThis is the expression part of an expression statement[0m[0m
  [2m2[0m | <html lang="en">
  [2m3[0m | <head>
- [2m4[0m |     <meta charset="UTF-8">
-   `---
+ [2m4[0m |   
