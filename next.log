@@ -281,4 +281,3 @@ Error:
  [2m1[0m | <!DOCTYPE html>
    : [31;1m^^^^|^^^^[0m[33;1m ^^^^[0m
    :     [31;1m`-- [31;1mThis is the expression part of an expression statement[0m[0m
- [2m2[0m | <html lang="en">
