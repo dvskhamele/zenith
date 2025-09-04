@@ -6,7 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import dynamic from 'next/dynamic';
 
 // Dynamically import the dashboard to avoid SSR issues
-const SimpleDashboard = dynamic(() => import('./simple-dashboard'), {
+const DashboardContent = dynamic(() => import('./dashboard-content'), {
   ssr: false,
   loading: () => (
     <div className="flex h-screen items-center justify-center bg-gray-900">
@@ -45,5 +45,5 @@ export default function DashboardPage() {
   }
 
   // Render dashboard for authenticated users
-  return <SimpleDashboard />;
+  return <DashboardContent />;
 }
