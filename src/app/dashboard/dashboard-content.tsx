@@ -791,6 +791,22 @@ export default function DashboardContent() {
               </div>
             </div>
           )}
+          
+          {/* Facebook Pages Management */}
+          {activePage === 'facebook-pages' && (
+            <div className="p-6 overflow-y-auto h-full">
+              <h2 className="text-2xl font-bold text-white mb-6">Facebook Pages</h2>
+              <FacebookPagesManagement />
+            </div>
+          )}
+          
+          {/* Facebook Post Widget */}
+          {activePage === 'facebook-post' && (
+            <div className="p-6 overflow-y-auto h-full max-w-4xl mx-auto w-full">
+              <h2 className="text-2xl font-bold text-white mb-6">Post to Facebook</h2>
+              <FacebookPostWidget />
+            </div>
+          )}
         </div>
       </main>
     </div>
