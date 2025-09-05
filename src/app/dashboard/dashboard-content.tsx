@@ -167,6 +167,29 @@ export default function DashboardContent() {
                 </svg>
               </button>
             </li>
+            {/* Facebook Integration Tabs */}
+            <li>
+              <button 
+                onClick={() => setActivePage('facebook-pages')} 
+                title="Facebook Pages" 
+                className={`block p-3 rounded-lg ${activePage === 'facebook-pages' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
+              >
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                </svg>
+              </button>
+            </li>
+            <li>
+              <button 
+                onClick={() => setActivePage('facebook-post')} 
+                title="Post to Facebook" 
+                className={`block p-3 rounded-lg ${activePage === 'facebook-post' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
+              >
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                </svg>
+              </button>
+            </li>
           </ul>
         </div>
         <div>
@@ -687,6 +710,74 @@ export default function DashboardContent() {
               <h2 className="text-2xl font-bold text-white mb-6">Settings</h2>
               <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
                 <p className="text-slate-400">Workspace, Team, and Billing settings will be managed here.</p>
+              </div>
+            </div>
+          )}
+          
+          {/* Facebook Pages Management */}
+          {activePage === 'facebook-pages' && (
+            <div className="p-6 overflow-y-auto h-full">
+              <h2 className="text-2xl font-bold text-white mb-6">Facebook Pages</h2>
+              <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 max-w-4xl">
+                <div className="text-center py-8">
+                  <div className="text-yellow-400 mb-4">
+                    <svg className="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-2">Connect to Facebook</h3>
+                  <p className="text-slate-400 mb-6">
+                    Connect your Facebook account to manage your pages and post content.
+                  </p>
+                  <button
+                    onClick={() => {
+                      // Use localhost:3001 to match our current development server
+                      const redirectUrl = 'http://localhost:3001/auth/callback';
+                      // Redirect to Supabase OAuth
+                      window.location.href = `https://qfpvsyhtijwxkmyrqswa.supabase.co/auth/v1/authorize?provider=facebook&redirect_to=${redirectUrl}&scopes=pages_show_list,pages_read_engagement,pages_manage_posts,pages_manage_metadata,pages_read_user_content`;
+                    }}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg flex items-center justify-center mx-auto mb-4"
+                  >
+                    <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    Connect with Facebook
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Facebook Post Widget */}
+          {activePage === 'facebook-post' && (
+            <div className="p-6 overflow-y-auto h-full max-w-4xl mx-auto w-full">
+              <h2 className="text-2xl font-bold text-white mb-6">Post to Facebook</h2>
+              <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                <div className="text-center py-8">
+                  <div className="text-yellow-400 mb-4">
+                    <svg className="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-2">Post to Facebook</h3>
+                  <p className="text-slate-400 mb-6">
+                    Create and publish posts directly to your Facebook pages.
+                  </p>
+                  <button
+                    onClick={() => {
+                      // Use localhost:3001 to match our current development server
+                      const redirectUrl = 'http://localhost:3001/auth/callback';
+                      // Redirect to Supabase OAuth
+                      window.location.href = `https://qfpvsyhtijwxkmyrqswa.supabase.co/auth/v1/authorize?provider=facebook&redirect_to=${redirectUrl}&scopes=pages_show_list,pages_read_engagement,pages_manage_posts,pages_manage_metadata,pages_read_user_content`;
+                    }}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg flex items-center justify-center mx-auto mb-4"
+                  >
+                    <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    Connect with Facebook to Post
+                  </button>
+                </div>
               </div>
             </div>
           )}
