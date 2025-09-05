@@ -124,16 +124,16 @@ export default function DashboardContent() {
   return (
     <div className="flex h-screen bg-slate-900 text-gray-200">
       {/* Sidebar Navigation with labeled icons */}
-      <nav className=\"w-64 bg-slate-950 p-4 flex flex-col justify-between border-r border-slate-800 flex-shrink-0\">
+      <nav className="w-64 bg-slate-950 p-4 flex flex-col justify-between border-r border-slate-800 flex-shrink-0">
         <div>
-          <div className=\"p-2 mb-6\">
-            <div className=\"flex items-center\">
-              <svg className=\"w-8 h-8 text-sky-400\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">
-                <path strokeLinecap=\"round\" strokeLinejoin=\"round\" strokeWidth=\"2\" d=\"M13 10V3L4 14h7v7l9-11h-7z\"></path>
+          <div className="p-2 mb-6">
+            <div className="flex items-center">
+              <svg className="w-8 h-8 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
               </svg>
-              <h1 className=\"text-white text-xl font-bold ml-2\">Zenith</h1>
+              <h1 className="text-white text-xl font-bold ml-2">Zenith</h1>
             </div>
-            <p className=\"text-slate-400 text-xs mt-1\">Social Media Management</p>
+            <p className="text-slate-400 text-xs mt-1">Social Media Management</p>
           </div>
           <ul className=\"space-y-1\">
             <li>
