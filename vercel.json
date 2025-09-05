@@ -1,1 +1,19 @@
-{ "builds": [{ "src": "package.json", "use": "@vercel/next" }], "routes": [{ "src": "/(.*)", "dest": "/$1" }] }
+{
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "build": {
+    "env": {
+      "NEXT_TELEMETRY_DISABLED": "1"
+    }
+  }
+}
