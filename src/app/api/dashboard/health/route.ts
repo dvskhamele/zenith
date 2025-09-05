@@ -29,11 +29,11 @@ export async function GET() {
   });
 }
 
-export async function POST(request) {
+export async function POST(request: Request) {
   try {
     const { check } = await request.json();
     
-    const result = {
+    const result: any = {
       status: 'processed',
       check: check || 'general',
       timestamp: new Date().toISOString()
