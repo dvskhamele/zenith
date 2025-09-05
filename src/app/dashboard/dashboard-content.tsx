@@ -1,9 +1,23 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
 export default function DashboardContent() {
-  const [activePage, setActivePage] = useState('queue');
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  
+  // Get active tab from URL or default to 'queue'
+  const getActiveTab = () => {
+    const tab = searchParams.get('tab');
+    if (tab && ['queue', 'schedule', 'strategy', 'automation', 'connections', 'facebook-pages', 'facebook-post', 'settings', 'composer'].includes(tab)) {
+      return tab;
+    }
+    return 'queue';
+  };
+  
+  const [activePage, setActivePage] = useState(getActiveTab);
   const [activeSourceTab, setActiveSourceTab] = useState('drafts');
   const [posts, setPosts] = useState<Record<string, any>>({});
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
@@ -20,6 +34,17 @@ export default function DashboardContent() {
   ]);
   const [activeWorkspace, setActiveWorkspace] = useState({ id: 1, name: 'Innovate Corp', initials: 'IC', color: 'bg-indigo-500' });
   const [isWorkspaceDropdownOpen, setIsWorkspaceDropdownOpen] = useState(false);
+
+  // Update active tab when URL changes
+  useEffect(() => {
+    setActivePage(getActiveTab());
+  }, [searchParams]);
+
+  // Update URL when tab changes
+  const handleTabChange = (tab: string) => {
+    setActivePage(tab);
+    router.push(`${pathname}?tab=${tab}`);
+  };
 
   // Master schedule data
   const masterSchedule = [
