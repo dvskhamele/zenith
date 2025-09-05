@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 export default function VisualCalendar() {
   const [posts, setPosts] = useState<Record<string, string>>({});
   const [editingPost, setEditingPost] = useState<Record<string, boolean>>({});
-  const [activeSourceTab, setActiveSourceTab] = useState<'drafts' | 'templates' | 'sources'>('drafts');
+  const [activeSourceTab, setActiveSourceTab] = useState<'drafts' | 'templates' | 'sources' | 'frequency'>('drafts');
   const [draftsAndIdeas, setDraftsAndIdeas] = useState([
     { id: 101, type: 'draft' as const, text: 'The future of B2B marketing is community-led. Here\'s why...' },
     { id: 102, type: 'draft' as const, text: 'Our latest case study with Acme Corp shows a 300% increase in lead generation.' },
@@ -208,6 +208,13 @@ export default function VisualCalendar() {
                           />
                         )}
                       </div>
+                      <div className="mt-2 flex items-center gap-2">
+                        <span className="text-xs text-slate-400">Tags:</span>
+                        <div className="flex gap-2">
+                          <span className="bg-sky-500/20 text-sky-300 px-2 py-1 rounded-full text-xs">#marketing</span>
+                          <span className="bg-emerald-500/20 text-emerald-300 px-2 py-1 rounded-full text-xs">#b2b</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 );
@@ -250,6 +257,16 @@ export default function VisualCalendar() {
               }`}
             >
               Sources
+            </button>
+            <button 
+              onClick={() => setActiveSourceTab('frequency')}
+              className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
+                activeSourceTab === 'frequency' 
+                  ? 'border-sky-400 text-sky-400' 
+                  : 'border-transparent text-slate-400 hover:text-white'
+              }`}
+            >
+              Frequency
             </button>
           </nav>
         </div>
@@ -343,6 +360,19 @@ export default function VisualCalendar() {
                 <button className="w-full bg-purple-500 text-white text-xs font-bold py-2 rounded-md hover:bg-purple-600">
                   Generate Content
                 </button>
+              </div>
+            </div>
+          )}
+          {activeSourceTab === 'frequency' && (
+            <div>
+              <div className="bg-slate-800 p-4 rounded-lg">
+                <h4 className="font-semibold text-sm flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Frequency Settings
+                </h4>
+                <p className="text-xs text-slate-400 mt-1 mb-2">Configure post frequency for each category.</p>
               </div>
             </div>
           )}

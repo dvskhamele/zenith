@@ -1,20 +1,50 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname };
+import dynamic from 'next/dynamic';
+
+// Dynamically import the VisualCalendar component
+const VisualCalendar = dynamic(() => import('./visual-calendar'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-full items-center justify-center">
+      <div className="text-white text-lg">Loading calendar...</div>
+    </div>
+  )
+});
+
+// Dynamically import Facebook components
+const FacebookPagesManagement = dynamic(() => import('@/components/FacebookPagesManagement'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-full items-center justify-center">
+      <div className="text-white text-lg">Loading Facebook pages...</div>
+    </div>
+  )
+});
+
+const FacebookPostWidget = dynamic(() => import('@/components/FacebookPostWidget'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-full items-center justify-center">
+      <div className="text-white text-lg">Loading Facebook post widget...</div>
+    </div>
+  )
+});
 
 export default function DashboardContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   
-  // Get active tab from URL or default to 'queue'
+  // Get active tab from URL or default to 'calendar'
   const getActiveTab = () => {
     const tab = searchParams.get('tab');
-    if (tab && ['queue', 'schedule', 'strategy', 'automation', 'connections', 'facebook-pages', 'facebook-post', 'settings', 'composer'].includes(tab)) {
+    if (tab && ['calendar', 'schedule', 'strategy', 'automation', 'connections', 'facebook-pages', 'facebook-post', 'settings', 'composer'].includes(tab)) {
       return tab;
     }
-    return 'queue';
+    return 'calendar';
   };
   
   const [activePage, setActivePage] = useState(getActiveTab);
@@ -129,90 +159,111 @@ export default function DashboardContent() {
   return (
     <div className="flex h-screen bg-slate-900 text-gray-200">
       {/* Sidebar Navigation */}
-      <nav className="w-20 bg-slate-950 p-4 flex flex-col items-center justify-between border-r border-slate-800 flex-shrink-0">
+      <nav className="w-64 bg-slate-950 p-4 flex flex-col justify-between border-r border-slate-800 flex-shrink-0">
         <div>
           <div className="p-2 mb-10">
             <svg className="w-8 h-8 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
             </svg>
           </div>
-          <ul className="space-y-4">
+          <ul className="space-y-1">
             <li>
               <button 
                 onClick={() => handleTabChange('queue')} 
-                title="Queue" 
-                className={`block p-3 rounded-lg ${activePage === 'queue' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
+                className={`w-full text-left px-6 py-3 rounded-md flex items-center ${activePage === 'queue' ? 'bg-blue-600' : 'hover:bg-gray-700'}`}
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
+                <div className="ml-3">
+                  <div className="font-medium">Queue</div>
+                  <div className="text-xs text-gray-400">Scheduled posts</div>
+                </div>
               </button>
             </li>
             <li>
               <button 
                 onClick={() => handleTabChange('schedule')} 
-                title="Master Schedule" 
-                className={`block p-3 rounded-lg ${activePage === 'schedule' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
+                className={`w-full text-left px-6 py-3 rounded-md flex items-center ${activePage === 'schedule' ? 'bg-blue-600' : 'hover:bg-gray-700'}`}
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                 </svg>
+                <div className="ml-3">
+                  <div className="font-medium">Schedule</div>
+                  <div className="text-xs text-gray-400">Posting times</div>
+                </div>
               </button>
             </li>
             <li>
               <button 
                 onClick={() => handleTabChange('strategy')} 
-                title="Audience & Strategy" 
-                className={`block p-3 rounded-lg ${activePage === 'strategy' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
+                className={`w-full text-left px-6 py-3 rounded-md flex items-center ${activePage === 'strategy' ? 'bg-blue-600' : 'hover:bg-gray-700'}`}
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                 </svg>
+                <div className="ml-3">
+                  <div className="font-medium">Strategy</div>
+                  <div className="text-xs text-gray-400">Audience & AI</div>
+                </div>
               </button>
             </li>
             <li>
               <button 
                 onClick={() => handleTabChange('automation')} 
-                title="Automation" 
-                className={`block p-3 rounded-lg ${activePage === 'automation' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
+                className={`w-full text-left px-6 py-3 rounded-md flex items-center ${activePage === 'automation' ? 'bg-blue-600' : 'hover:bg-gray-700'}`}
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
                 </svg>
+                <div className="ml-3">
+                  <div className="font-medium">Automation</div>
+                  <div className="text-xs text-gray-400">Recycling rules</div>
+                </div>
               </button>
             </li>
             <li>
               <button 
                 onClick={() => handleTabChange('connections')} 
-                title="Connections" 
-                className={`block p-3 rounded-lg ${activePage === 'connections' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
+                className={`w-full text-left px-6 py-3 rounded-md flex items-center ${activePage === 'connections' ? 'bg-blue-600' : 'hover:bg-gray-700'}`}
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
                 </svg>
+                <div className="ml-3">
+                  <div className="font-medium">Connections</div>
+                  <div className="text-xs text-gray-400">Social accounts</div>
+                </div>
               </button>
             </li>
             {/* Facebook Integration Tabs */}
             <li>
               <button 
                 onClick={() => handleTabChange('facebook-pages')} 
-                title="Facebook Pages" 
-                className={`block p-3 rounded-lg ${activePage === 'facebook-pages' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
+                className={`w-full text-left px-6 py-3 rounded-md flex items-center ${activePage === 'facebook-pages' ? 'bg-blue-600' : 'hover:bg-gray-700'}`}
               >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                 </svg>
+                <div className="ml-3">
+                  <div className="font-medium">Facebook Pages</div>
+                  <div className="text-xs text-gray-400">Manage your pages</div>
+                </div>
               </button>
             </li>
             <li>
               <button 
                 onClick={() => handleTabChange('facebook-post')} 
-                title="Post to Facebook" 
-                className={`block p-3 rounded-lg ${activePage === 'facebook-post' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
+                className={`w-full text-left px-6 py-3 rounded-md flex items-center ${activePage === 'facebook-post' ? 'bg-blue-600' : 'hover:bg-gray-700'}`}
               >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                 </svg>
+                <div className="ml-3">
+                  <div className="font-medium">Post to Facebook</div>
+                  <div className="text-xs text-gray-400">Create and publish</div>
+                </div>
               </button>
             </li>
           </ul>
@@ -220,13 +271,16 @@ export default function DashboardContent() {
         <div>
           <button 
             onClick={() => setActivePage('settings')} 
-            title="Settings" 
-            className={`block p-3 rounded-lg ${activePage === 'settings' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
+            className={`w-full text-left px-6 py-3 rounded-md flex items-center ${activePage === 'settings' ? 'bg-blue-600' : 'hover:bg-gray-700'}`}
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.096 2.572-1.065z"></path>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
+            <div className="ml-3">
+              <div className="font-medium">Settings</div>
+              <div className="text-xs text-gray-400">Account preferences</div>
+            </div>
           </button>
         </div>
       </nav>
@@ -300,13 +354,13 @@ export default function DashboardContent() {
           </div>
         </header>
 
-        {/* Page Content */}
-        <div className="flex-1 overflow-auto">
+        {/* Page Content Wrapper with consistent padding */}
+        <div className="flex-1 overflow-auto p-8">
           {/* Queue Page */}
           {activePage === 'queue' && (
-            <div className="flex h-full">
+            <div className="flex h-full -m-8">
               {/* Daily Queues Timeline */}
-              <div className="flex-1 p-6 overflow-y-auto">
+              <div className="flex-1 overflow-y-auto p-8">
                 {days.map(day => (
                   <div key={day.date} className="mb-8">
                     <div className="flex justify-between items-center mb-3">
@@ -504,7 +558,7 @@ export default function DashboardContent() {
           
           {/* Schedule Page */}
           {activePage === 'schedule' && (
-            <div className="p-8 overflow-y-auto h-full">
+            <div className="overflow-y-auto h-full">
               <h2 className="text-2xl font-bold text-white mb-6">Master Schedule</h2>
               <p className="text-slate-400 mb-6 max-w-2xl">
                 Define your weekly posting cadence. The system will automatically create empty slots in your queue for you to fill.
@@ -556,7 +610,7 @@ export default function DashboardContent() {
           
           {/* Strategy Page */}
           {activePage === 'strategy' && (
-            <div className="p-8 overflow-y-auto h-full">
+            <div className="overflow-y-auto h-full">
               <h2 className="text-2xl font-bold text-white mb-6">Audience & Strategy Analysis</h2>
               <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 mb-6">
                 <h3 className="text-lg font-semibold text-white mb-2">Content Input</h3>
@@ -630,7 +684,7 @@ export default function DashboardContent() {
           
           {/* Automation Page */}
           {activePage === 'automation' && (
-            <div className="p-8 overflow-y-auto h-full">
+            <div className="overflow-y-auto h-full">
               <h2 className="text-2xl font-bold text-white mb-6">Automation Rules</h2>
               <p className="text-slate-400 mb-6 max-w-2xl">
                 Create rules to automatically recycle your best content and maximize its reach.
@@ -678,7 +732,7 @@ export default function DashboardContent() {
           
           {/* Connections Page */}
           {activePage === 'connections' && (
-            <div className="p-8 overflow-y-auto h-full">
+            <div className="overflow-y-auto h-full">
               <h2 className="text-2xl font-bold text-white mb-6">Connections</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
@@ -731,7 +785,7 @@ export default function DashboardContent() {
           
           {/* Settings Page */}
           {activePage === 'settings' && (
-            <div className="p-8">
+            <div>
               <h2 className="text-2xl font-bold text-white mb-6">Settings</h2>
               <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
                 <p className="text-slate-400">Workspace, Team, and Billing settings will be managed here.</p>
@@ -741,7 +795,7 @@ export default function DashboardContent() {
           
           {/* Facebook Pages Management */}
           {activePage === 'facebook-pages' && (
-            <div className="p-6 overflow-y-auto h-full">
+            <div className="overflow-y-auto h-full">
               <h2 className="text-2xl font-bold text-white mb-6">Facebook Pages</h2>
               <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 max-w-4xl">
                 <div className="text-center py-8">
@@ -775,7 +829,7 @@ export default function DashboardContent() {
           
           {/* Facebook Post Widget */}
           {activePage === 'facebook-post' && (
-            <div className="p-6 overflow-y-auto h-full max-w-4xl mx-auto w-full">
+            <div className="overflow-y-auto h-full max-w-4xl mx-auto w-full">
               <h2 className="text-2xl font-bold text-white mb-6">Post to Facebook</h2>
               <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
                 <div className="text-center py-8">
@@ -809,7 +863,7 @@ export default function DashboardContent() {
           
           {/* Composer Page */}
           {activePage === 'composer' && (
-            <div className="p-8 overflow-y-auto h-full">
+            <div className="overflow-y-auto h-full">
               <h2 className="text-2xl font-bold text-white mb-6">Create a New Post</h2>
               <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 max-w-4xl mx-auto">
                 <textarea 

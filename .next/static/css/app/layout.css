@@ -634,6 +634,9 @@ video {
 .z-50 {
   z-index: 50;
 }
+.-m-8 {
+  margin: -2rem;
+}
 .mx-4 {
   margin-left: 1rem;
   margin-right: 1rem;
@@ -718,6 +721,9 @@ video {
 }
 .mt-8 {
   margin-top: 2rem;
+}
+.ml-3 {
+  margin-left: 0.75rem;
 }
 .block {
   display: block;

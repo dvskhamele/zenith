@@ -19,13 +19,6 @@ export default function DashboardPage() {
   const router = useRouter();
   const { user, loading } = useAuth();
 
-  useEffect(() => {
-    // Redirect to login if user is not authenticated
-    if (!loading && !user) {
-      router.push('/login');
-    }
-  }, [user, loading, router]);
-
   // Show loading state while checking auth
   if (loading) {
     return (
@@ -35,15 +28,6 @@ export default function DashboardPage() {
     );
   }
 
-  // Show login redirect if no user
-  if (!user) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-gray-900">
-        <div className="text-white text-lg">Redirecting to login...</div>
-      </div>
-    );
-  }
-
-  // Render dashboard for authenticated users
+  // Render dashboard content regardless of authentication status
   return <DashboardContent />;
 }
