@@ -139,7 +139,7 @@ export default function DashboardContent() {
           <ul className="space-y-4">
             <li>
               <button 
-                onClick={() => setActivePage('queue')} 
+                onClick={() => handleTabChange('queue')} 
                 title="Queue" 
                 className={`block p-3 rounded-lg ${activePage === 'queue' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
               >
@@ -150,7 +150,7 @@ export default function DashboardContent() {
             </li>
             <li>
               <button 
-                onClick={() => setActivePage('schedule')} 
+                onClick={() => handleTabChange('schedule')} 
                 title="Master Schedule" 
                 className={`block p-3 rounded-lg ${activePage === 'schedule' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
               >
@@ -161,7 +161,7 @@ export default function DashboardContent() {
             </li>
             <li>
               <button 
-                onClick={() => setActivePage('strategy')} 
+                onClick={() => handleTabChange('strategy')} 
                 title="Audience & Strategy" 
                 className={`block p-3 rounded-lg ${activePage === 'strategy' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
               >
@@ -172,7 +172,7 @@ export default function DashboardContent() {
             </li>
             <li>
               <button 
-                onClick={() => setActivePage('automation')} 
+                onClick={() => handleTabChange('automation')} 
                 title="Automation" 
                 className={`block p-3 rounded-lg ${activePage === 'automation' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
               >
@@ -183,7 +183,7 @@ export default function DashboardContent() {
             </li>
             <li>
               <button 
-                onClick={() => setActivePage('connections')} 
+                onClick={() => handleTabChange('connections')} 
                 title="Connections" 
                 className={`block p-3 rounded-lg ${activePage === 'connections' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
               >
@@ -195,7 +195,7 @@ export default function DashboardContent() {
             {/* Facebook Integration Tabs */}
             <li>
               <button 
-                onClick={() => setActivePage('facebook-pages')} 
+                onClick={() => handleTabChange('facebook-pages')} 
                 title="Facebook Pages" 
                 className={`block p-3 rounded-lg ${activePage === 'facebook-pages' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
               >
@@ -206,7 +206,7 @@ export default function DashboardContent() {
             </li>
             <li>
               <button 
-                onClick={() => setActivePage('facebook-post')} 
+                onClick={() => handleTabChange('facebook-post')} 
                 title="Post to Facebook" 
                 className={`block p-3 rounded-lg ${activePage === 'facebook-post' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
               >
