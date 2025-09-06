@@ -151,11 +151,23 @@ export default function SimpleDashboard() {
             {activeTab === 'settings' && 'Settings'}
           </h2>
           <div className="flex items-center space-x-4">
-            <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm flex items-center">
+            <button 
+              onClick={() => router.push('/dashboard?page=composer')}
+              className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm flex items-center"
+            >
               <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
               Add Post
+            </button>
+            <button 
+              onClick={() => router.push('/dashboard?page=composer')}
+              className="bg-sky-500 hover:bg-sky-600 px-4 py-2 rounded-md text-sm flex items-center"
+            >
+              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Create Post
             </button>
             <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
               <span className="text-sm font-semibold">U</span>

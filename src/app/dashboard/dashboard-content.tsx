@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
 // Dynamically import Facebook components to avoid SSR issues
@@ -33,7 +34,27 @@ const VisualCalendar = dynamic(() => import('./visual-calendar'), {
 });
 
 export default function DashboardContent() {
-  const [activePage, setActivePage] = useState('calendar');
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  
+  // Get active page from URL or default to 'calendar'
+  const getActivePage = () => {
+    const page = searchParams.get('page');
+    const validPages = ['calendar', 'schedule', 'strategy', 'automation', 'connections', 'facebook-pages', 'facebook-post', 'settings', 'composer'];
+    if (page && validPages.includes(page)) {
+      return page;
+    }
+    return 'calendar';
+  };
+  
+  const [activePage, setActivePage] = useState(getActivePage());
+
+  // Update URL when page changes
+  const handlePageChange = (page: string) => {
+    setActivePage(page);
+    router.push(`${pathname}?page=${page}`);
+  };
   const [activeSourceTab, setActiveSourceTab] = useState('drafts');
   const [posts, setPosts] = useState<Record<string, any>>({});
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
@@ -50,6 +71,11 @@ export default function DashboardContent() {
   ]);
   const [activeWorkspace, setActiveWorkspace] = useState({ id: 1, name: 'Innovate Corp', initials: 'IC', color: 'bg-indigo-500' });
   const [isWorkspaceDropdownOpen, setIsWorkspaceDropdownOpen] = useState(false);
+
+  // Update active page when URL changes
+  useState(() => {
+    setActivePage(getActivePage());
+  }, [searchParams]);
 
   // Master schedule data
   const masterSchedule = [
@@ -148,7 +174,7 @@ export default function DashboardContent() {
           <ul className="space-y-1">
             <li>
               <button 
-                onClick={() => setActivePage('calendar')} 
+                onClick={() => handlePageChange('calendar')} 
                 className={`w-full text-left px-4 py-3 rounded-md flex items-center ${activePage === 'calendar' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
               >
                 <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -160,23 +186,10 @@ export default function DashboardContent() {
                 </div>
               </button>
             </li>
+            
             <li>
               <button 
-                onClick={() => setActivePage('queue')} 
-                className={`w-full text-left px-4 py-3 rounded-md flex items-center ${activePage === 'queue' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
-              >
-                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-                <div>
-                  <div className="font-medium">Queue</div>
-                  <div className="text-xs text-slate-400">Content scheduling</div>
-                </div>
-              </button>
-            </li>
-            <li>
-              <button 
-                onClick={() => setActivePage('schedule')} 
+                onClick={() => handlePageChange('schedule')} 
                 className={`w-full text-left px-4 py-3 rounded-md flex items-center ${activePage === 'schedule' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
               >
                 <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -190,7 +203,7 @@ export default function DashboardContent() {
             </li>
             <li>
               <button 
-                onClick={() => setActivePage('strategy')} 
+                onClick={() => handlePageChange('strategy')} 
                 className={`w-full text-left px-4 py-3 rounded-md flex items-center ${activePage === 'strategy' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
               >
                 <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -204,7 +217,7 @@ export default function DashboardContent() {
             </li>
             <li>
               <button 
-                onClick={() => setActivePage('automation')} 
+                onClick={() => handlePageChange('automation')} 
                 className={`w-full text-left px-4 py-3 rounded-md flex items-center ${activePage === 'automation' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
               >
                 <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -218,7 +231,7 @@ export default function DashboardContent() {
             </li>
             <li>
               <button 
-                onClick={() => setActivePage('connections')} 
+                onClick={() => handlePageChange('connections')} 
                 className={`w-full text-left px-4 py-3 rounded-md flex items-center ${activePage === 'connections' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
               >
                 <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -233,7 +246,7 @@ export default function DashboardContent() {
             {/* Facebook Integration Tabs */}
             <li>
               <button 
-                onClick={() => setActivePage('facebook-pages')} 
+                onClick={() => handlePageChange('facebook-pages')} 
                 className={`w-full text-left px-4 py-3 rounded-md flex items-center ${activePage === 'facebook-pages' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
               >
                 <svg className="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">
@@ -247,7 +260,7 @@ export default function DashboardContent() {
             </li>
             <li>
               <button 
-                onClick={() => setActivePage('facebook-post')} 
+                onClick={() => handlePageChange('facebook-post')} 
                 className={`w-full text-left px-4 py-3 rounded-md flex items-center ${activePage === 'facebook-post' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
               >
                 <svg className="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">
@@ -263,7 +276,7 @@ export default function DashboardContent() {
         </div>
         <div>
           <button 
-            onClick={() => setActivePage('settings')} 
+            onClick={() => handlePageChange('settings')} 
             className={`w-full text-left px-4 py-3 rounded-md flex items-center ${activePage === 'settings' ? 'bg-slate-800 text-sky-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
           >
             <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -294,13 +307,13 @@ export default function DashboardContent() {
           </div>
           <div className="flex items-center gap-4">
             <button 
-              onClick={() => setActivePage('composer')} 
+              onClick={() => handlePageChange('composer')} 
               className="bg-slate-700 text-white font-semibold px-4 py-2 rounded-lg hover:bg-slate-600 text-sm"
             >
               Post Now
             </button>
             <button 
-              onClick={() => setActivePage('composer')} 
+              onClick={() => handlePageChange('composer')} 
               className="bg-sky-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-sky-600 flex items-center gap-2 text-sm"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -399,7 +412,7 @@ export default function DashboardContent() {
                     <div className="flex justify-between items-center mb-3">
                       <h2 className="text-lg font-semibold text-white">{day.formatted}</h2>
                       <button 
-                        onClick={() => setActivePage('composer')} 
+                        onClick={() => handlePageChange('composer')} 
                         className="text-sm text-slate-400 hover:text-sky-400 flex items-center gap-1"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -416,7 +429,7 @@ export default function DashboardContent() {
                             <div className="text-center flex-shrink-0 w-24 pt-1">
                               <p className="font-mono text-sm text-slate-400">{slot.time}</p>
                               <p className={`text-xs font-semibold mt-1 px-2 py-0.5 rounded-full inline-block ${slot.color}`}>
-                                {slot.category}
+                                #{slot.category.toLowerCase().replace(/\s+/g, '')}
                               </p>
                             </div>
                             {/* Optimized Post Card */}
@@ -452,20 +465,31 @@ export default function DashboardContent() {
                                 </div>
                               </div>
                               <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-700/50">
-                                <div className="flex items-center gap-3 text-slate-400">
-                                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
-                                  </svg>
-                                  <svg className="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.98v16h4.98v-8.396c0-2.002 1.809-2.482 2.457-2.482 1.291 0 2.543.856 2.543 3.322v7.556h4.98v-10.298c0-4.836-2.904-6.702-6.485-6.702-3.582 0-5.487 1.957-5.487 1.957v-1.657z"></path>
-                                  </svg>
-                                </div>
                                 <div className="flex items-center gap-2">
-                                  <span className="flex items-center gap-1.5 text-xs font-medium bg-yellow-500/10 text-yellow-400 px-2.5 py-1 rounded-full">
-                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                  <div className="flex gap-1">
+                                    <button className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white hover:bg-blue-700 transition-colors">
+                                      <span className="font-bold text-xs">f</span>
+                                    </button>
+                                    <button className="w-6 h-6 rounded-full bg-black flex items-center justify-center text-white hover:bg-gray-800 transition-colors">
+                                      <span className="font-bold text-xs">X</span>
+                                    </button>
+                                    <button className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white hover:opacity-90 transition-opacity">
+                                      <span className="font-bold text-xs">in</span>
+                                    </button>
+                                    <button className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white hover:bg-blue-600 transition-colors">
+                                      <span className="font-bold text-xs">in</span>
+                                    </button>
+                                    <button className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-black hover:bg-gray-300 transition-colors">
+                                      <span className="font-bold text-xs">t</span>
+                                    </button>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <span className="flex items-center gap-1 text-xs font-medium bg-yellow-500/10 text-yellow-400 px-2 py-1 rounded-full">
+                                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                                     </svg>
-                                    Awaiting Approval
+                                    Approval
                                   </span>
                                 </div>
                               </div>
@@ -513,9 +537,6 @@ export default function DashboardContent() {
                         >
                           <div className="flex justify-between items-start">
                             <div className="flex-grow">
-                              <p className={`text-xs font-semibold uppercase tracking-wider mb-1 ${item.type === 'draft' ? 'text-sky-400' : 'text-purple-400'}`}>
-                                {item.type}
-                              </p>
                               <p className="text-sm font-medium">{item.text}</p>
                             </div>
                             <button 
@@ -624,7 +645,7 @@ export default function DashboardContent() {
                             />
                             <span className="text-sm text-slate-400">Post from:</span>
                             <select className={`bg-slate-700 rounded-md p-1.5 text-sm font-medium ${slot.color}`}>
-                              <option>{slot.category}</option>
+                              <option>#{slot.category.toLowerCase().replace(/\s+/g, '')}</option>
                             </select>
                           </div>
                           <button className="text-slate-500 hover:text-red-400 p-2 rounded-md">

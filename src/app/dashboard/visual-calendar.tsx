@@ -8,10 +8,12 @@ export default function VisualCalendar() {
   const [activeSourceTab, setActiveSourceTab] = useState<'drafts' | 'templates' | 'sources' | 'frequency'>('drafts');
   const [draftsAndIdeas, setDraftsAndIdeas] = useState([
     { id: 101, type: 'draft' as const, text: 'The future of B2B marketing is community-led. Here\'s why...' },
-    { id: 102, type: 'draft' as const, text: 'Our latest case study with Acme Corp shows a 300% increase in lead generation.' },
-    { id: 201, type: 'idea' as const, text: 'A thread about the importance of brand voice.' },
-    { id: 202, type: 'idea' as const, text: 'A quick tip video for productivity.' }
+    { id: 102, type: 'draft' as const, text: 'Our latest case study with Acme Corp shows a 300% increase in lead generation.' }
   ]);
+  
+  // State for platform toggles per post
+  const [platformToggles, setPlatformToggles] = useState<Record<string, Record<string, boolean>>>({});
+  
   const editorsRef = useRef<Record<string, HTMLTextAreaElement | null>>({});
 
   // Master schedule data
@@ -35,7 +37,7 @@ export default function VisualCalendar() {
     { name: 'Promotions', color: 'bg-pink-500/20 text-pink-300' },
   ];
 
-  // Generate dates for the next 30 days
+  // Generate dates for the next 7 days (reduced from 30)
   const generateDays = (numDays: number) => {
     const days = [];
     const today = new Date();
@@ -53,7 +55,7 @@ export default function VisualCalendar() {
     return days;
   };
 
-  const days = generateDays(30);
+  const days = generateDays(7); // Reduced from 30 to 7 days
 
   const editPost = (postId: string, currentText: string) => {
     // Close any other open editors
@@ -135,7 +137,7 @@ export default function VisualCalendar() {
                       }}
                     >
                       <p className="font-mono text-sm text-slate-400">{slot.time}</p>
-                      <p className={`text-xs font-semibold mt-1 ${slot.color}`}>{slot.category}</p>
+                      <p className={`text-xs font-semibold mt-1 px-2 py-0.5 rounded-full inline-block ${slot.color}`}>#{slot.category.toLowerCase().replace(/\s+/g, '')}</p>
                       {posts[postId] && posts[postId].startsWith('data:image') ? (
                         <div className="mt-2 w-16 h-16 mx-auto rounded border border-slate-600 overflow-hidden">
                           <img 
@@ -208,11 +210,87 @@ export default function VisualCalendar() {
                           />
                         )}
                       </div>
-                      <div className="mt-2 flex items-center gap-2">
-                        <span className="text-xs text-slate-400">Tags:</span>
-                        <div className="flex gap-2">
-                          <span className="bg-sky-500/20 text-sky-300 px-2 py-1 rounded-full text-xs">#marketing</span>
-                          <span className="bg-emerald-500/20 text-emerald-300 px-2 py-1 rounded-full text-xs">#b2b</span>
+                      {/* Social Media Platform Selection - Toggle Oriented */}
+                      <div className="mt-2 flex items-center justify-between">
+                        <div className="flex gap-1">
+                          <button 
+                            className={`w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white transition-colors ${platformToggles[`${day.date}-${slot.id}`]?.facebook ? 'ring-2 ring-blue-300' : 'opacity-50'}`}
+                            onClick={() => {
+                              setPlatformToggles(prev => ({
+                                ...prev,
+                                [`${day.date}-${slot.id}`]: {
+                                  ...prev[`${day.date}-${slot.id}`],
+                                  facebook: !prev[`${day.date}-${slot.id}`]?.facebook
+                                }
+                              }));
+                            }}
+                          >
+                            <span className="font-bold text-xs">f</span>
+                          </button>
+                          <button 
+                            className={`w-6 h-6 rounded-full bg-black flex items-center justify-center text-white transition-colors ${platformToggles[`${day.date}-${slot.id}`]?.twitter ? 'ring-2 ring-blue-300' : 'opacity-50'}`}
+                            onClick={() => {
+                              setPlatformToggles(prev => ({
+                                ...prev,
+                                [`${day.date}-${slot.id}`]: {
+                                  ...prev[`${day.date}-${slot.id}`],
+                                  twitter: !prev[`${day.date}-${slot.id}`]?.twitter
+                                }
+                              }));
+                            }}
+                          >
+                            <span className="font-bold text-xs">X</span>
+                          </button>
+                          <button 
+                            className={`w-6 h-6 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white transition-opacity ${platformToggles[`${day.date}-${slot.id}`]?.instagram ? 'ring-2 ring-blue-300' : 'opacity-50'}`}
+                            onClick={() => {
+                              setPlatformToggles(prev => ({
+                                ...prev,
+                                [`${day.date}-${slot.id}`]: {
+                                  ...prev[`${day.date}-${slot.id}`],
+                                  instagram: !prev[`${day.date}-${slot.id}`]?.instagram
+                                }
+                              }));
+                            }}
+                          >
+                            <span className="font-bold text-xs">in</span>
+                          </button>
+                          <button 
+                            className={`w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white transition-colors ${platformToggles[`${day.date}-${slot.id}`]?.linkedin ? 'ring-2 ring-blue-300' : 'opacity-50'}`}
+                            onClick={() => {
+                              setPlatformToggles(prev => ({
+                                ...prev,
+                                [`${day.date}-${slot.id}`]: {
+                                  ...prev[`${day.date}-${slot.id}`],
+                                  linkedin: !prev[`${day.date}-${slot.id}`]?.linkedin
+                                }
+                              }));
+                            }}
+                          >
+                            <span className="font-bold text-xs">in</span>
+                          </button>
+                          <button 
+                            className={`w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-black transition-colors ${platformToggles[`${day.date}-${slot.id}`]?.tiktok ? 'ring-2 ring-blue-300' : 'opacity-50'}`}
+                            onClick={() => {
+                              setPlatformToggles(prev => ({
+                                ...prev,
+                                [`${day.date}-${slot.id}`]: {
+                                  ...prev[`${day.date}-${slot.id}`],
+                                  tiktok: !prev[`${day.date}-${slot.id}`]?.tiktok
+                                }
+                              }));
+                            }}
+                          >
+                            <span className="font-bold text-xs">t</span>
+                          </button>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="flex items-center gap-1 text-xs font-medium bg-yellow-500/10 text-yellow-400 px-2 py-1 rounded-full">
+                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                            </svg>
+                            Approval
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -284,11 +362,6 @@ export default function VisualCalendar() {
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex-grow">
-                      <p className={`text-xs font-semibold uppercase tracking-wider mb-1 ${
-                        item.type === 'draft' ? 'text-sky-400' : 'text-purple-400'
-                      }`}>
-                        {item.type}
-                      </p>
                       <p className="text-sm font-medium">{item.text}</p>
                     </div>
                     <button 
