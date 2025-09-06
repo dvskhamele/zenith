@@ -33,6 +33,12 @@
       "static/chunks/_app-pages-browser_src_components_FacebookPostWidget_tsx.js"
     ]
   },
+  "app/dashboard/dashboard-content.tsx -> html2canvas": {
+    "id": "app/dashboard/dashboard-content.tsx -> html2canvas",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_html2canvas_dist_html2canvas_js.js"
+    ]
+  },
   "app/dashboard/page.tsx -> ./dashboard-content": {
     "id": "app/dashboard/page.tsx -> ./dashboard-content",
     "files": [

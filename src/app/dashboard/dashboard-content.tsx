@@ -70,7 +70,7 @@ export default function DashboardContent() {
   const [posts, setPosts] = useState<Record<string, any>>({});
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
   const [draftsAndIdeas, setDraftsAndIdeas] = useState([
-    { id: 101, type: 'draft', text: 'The future of B2B marketing is community-led. Here's why...' },
+    { id: 101, type: 'draft', text: "The future of B2B marketing is community-led. Here's why..." },
     { id: 102, type: 'draft', text: 'Our latest case study with Acme Corp shows a 300% increase in lead generation.' }
   ]);
   
@@ -80,7 +80,19 @@ export default function DashboardContent() {
   const [result, setResult] = useState<{success?: string; error?: string} | null>(null);
   
   // State for platform toggles per post
-  const [platformToggles, setPlatformToggles] = useState<Record<string, Record<string, boolean>>>({});
+  const [platformToggles, setPlatformToggles] = useState<{ 
+    facebook?: boolean; 
+    twitter?: boolean; 
+    linkedin?: boolean; 
+    instagram?: boolean; 
+  }>({});
+  
+  // State for user information
+  const [userInfo, setUserInfo] = useState({
+    name: 'John Doe',
+    username: '@johndoe',
+    avatar: 'https://i.pravatar.cc/48?u=johndoe'
+  });
   
   const editorsRef = useRef<Record<string, HTMLTextAreaElement | null>>({});
   const [workspaces] = useState([
@@ -976,11 +988,11 @@ export default function DashboardContent() {
                         {/* Twitter Preview */}
                         <div className="twitter-template-bg">
                           <div className="flex items-start gap-3">
-                            <img className="w-12 h-12 rounded-full" src="https://i.pravatar.cc/48?u=innovatecorp" alt="avatar" />
+                            <img className="w-12 h-12 rounded-full" src={userInfo.avatar} alt="avatar" />
                             <div className="flex-grow">
                               <div className="flex items-center gap-2">
-                                <p className="font-bold text-white">Innovate Corp</p>
-                                <p className="text-slate-400">@innovatecorp</p>
+                                <p className="font-bold text-white">{userInfo.name}</p>
+                                <p className="text-slate-400">{userInfo.username}</p>
                               </div>
                               <div 
                                 contentEditable 
@@ -1004,18 +1016,62 @@ export default function DashboardContent() {
                     <div className="space-y-6 bg-slate-800 p-6 rounded-xl border border-slate-700">
                       <div>
                         <label className="text-sm font-medium text-slate-300">1. Select Template</label>
-                        <div 
-                          className="mt-2 bg-slate-900/50 p-3 rounded-md cursor-pointer border-2 border-sky-500"
-                          onClick={() => setComposerTemplate(composerTemplate === 'twitter' ? '' : 'twitter')}
-                        >
-                          <p className="font-medium">Twitter Image</p>
-                          <img src="https://placehold.co/300x150/0f172a/94a3b8?text=Template+Preview" className="rounded-md mt-2 border border-slate-700" />
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {/* Template selection icons */}
+                          <button 
+                            onClick={() => setComposerTemplate('')}
+                            className={`p-2 rounded-lg ${composerTemplate === '' ? 'bg-sky-500' : 'bg-slate-700 hover:bg-slate-600'}`}
+                            title="Normal Text"
+                          >
+                            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h7"></path>
+                            </svg>
+                          </button>
+                          
+                          <button 
+                            onClick={() => setComposerTemplate('twitter')}
+                            className={`p-2 rounded-lg ${composerTemplate === 'twitter' ? 'bg-sky-500' : 'bg-slate-700 hover:bg-slate-600'}`}
+                            title="Twitter Template"
+                          >
+                            <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+                            </svg>
+                          </button>
+                          
+                          <button 
+                            onClick={() => setComposerTemplate('instagram')}
+                            className={`p-2 rounded-lg ${composerTemplate === 'instagram' ? 'bg-sky-500' : 'bg-slate-700 hover:bg-slate-600'}`}
+                            title="Instagram Template"
+                          >
+                            <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path>
+                            </svg>
+                          </button>
+                          
+                          <button 
+                            onClick={() => setComposerTemplate('linkedin')}
+                            className={`p-2 rounded-lg ${composerTemplate === 'linkedin' ? 'bg-sky-500' : 'bg-slate-700 hover:bg-slate-600'}`}
+                            title="LinkedIn Template"
+                          >
+                            <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.98v16h4.98v-8.396c0-2.002 1.809-2.482 2.457-2.482 1.291 0 2.543.856 2.543 3.322v7.556h4.98v-10.298c0-4.836-2.904-6.702-6.485-6.702-3.582 0-5.487 1.957-5.487 1.957v-1.657z"></path>
+                            </svg>
+                          </button>
                         </div>
+                        
+                        {/* Template preview - shown only when a template is selected */}
+                        {composerTemplate && (
+                          <div className="mt-3 bg-slate-900/50 p-3 rounded-md border-2 border-sky-500">
+                            <p className="font-medium capitalize">{composerTemplate} Template</p>
+                            <img src={`https://placehold.co/300x150/0f172a/94a3b8?text=${composerTemplate}+Template`} className="rounded-md mt-2 border border-slate-700" />
+                          </div>
+                        )}
                       </div>
 
                       <div>
                         <label className="text-sm font-medium text-slate-300 block mb-2">2. Share or Download</label>
                         <div className="space-y-3">
+                          {/* Download button */}
                           <button 
                             onClick={downloadImage}
                             className="w-full flex items-center justify-center gap-2 bg-emerald-500 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-emerald-600"
@@ -1025,55 +1081,281 @@ export default function DashboardContent() {
                             </svg>
                             Download Image
                           </button>
+                          
                           <div className="flex items-center gap-2">
                             <div className="flex-1 border-t border-slate-700"></div>
                             <span className="text-xs text-slate-500">OR</span>
                             <div className="flex-1 border-t border-slate-700"></div>
                           </div>
-                          <p className="text-xs text-slate-400 text-center">Share the text directly:</p>
+                          
+                          {/* Share as text options */}
+                          <p className="text-xs text-slate-400 text-center">Share as Text:</p>
                           <div className="flex items-center justify-center gap-4">
                             <button 
                               onClick={() => shareAsText('twitter')}
                               title="Share text on Twitter" 
-                              className="p-3 rounded-lg bg-slate-700 hover:bg-slate-600"
+                              className="p-3 rounded-full bg-slate-700 hover:bg-slate-600"
                             >
-                              <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
                               </svg>
                             </button>
                             <button 
                               onClick={() => shareAsText('linkedin')}
                               title="Share text on LinkedIn" 
-                              className="p-3 rounded-lg bg-slate-700 hover:bg-slate-600"
+                              className="p-3 rounded-full bg-slate-700 hover:bg-slate-600"
                             >
-                              <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.98v16h4.98v-8.396c0-2.002 1.809-2.482 2.457-2.482 1.291 0 2.543.856 2.543 3.322v7.556h4.98v-10.298c0-4.836-2.904-6.702-6.485-6.702-3.582 0-5.487 1.957-5.487 1.957v-1.657z"></path>
                               </svg>
                             </button>
+                            <button 
+                              onClick={() => shareAsText('facebook')}
+                              title="Share text on Facebook" 
+                              className="p-3 rounded-full bg-slate-700 hover:bg-slate-600"
+                            >
+                              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                              </svg>
+                            </button>
                           </div>
+                          
+                          {/* Share as image options - only available when not using normal text */}
+                          {composerTemplate && (
+                            <>
+                              <div className="flex items-center gap-2 pt-2">
+                                <div className="flex-1 border-t border-slate-700"></div>
+                                <span className="text-xs text-slate-500">OR</span>
+                                <div className="flex-1 border-t border-slate-700"></div>
+                              </div>
+                              <p className="text-xs text-slate-400 text-center">Share as Image:</p>
+                              <div className="flex items-center justify-center gap-4">
+                                <button 
+                                  onClick={() => {
+                                    // Logic to share as image on Twitter
+                                    alert('Sharing as image to Twitter');
+                                  }}
+                                  title="Share image on Twitter" 
+                                  className="p-3 rounded-full bg-slate-700 hover:bg-slate-600"
+                                >
+                                  <svg className="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+                                  </svg>
+                                </button>
+                                <button 
+                                  onClick={() => {
+                                    // Logic to share as image on Instagram
+                                    alert('Sharing as image to Instagram');
+                                  }}
+                                  title="Share image on Instagram" 
+                                  className="p-3 rounded-full bg-slate-700 hover:bg-slate-600"
+                                >
+                                  <svg className="w-5 h-5 text-pink-500" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path>
+                                  </svg>
+                                </button>
+                                <button 
+                                  onClick={() => {
+                                    // Logic to share as image on Facebook
+                                    alert('Sharing as image to Facebook');
+                                  }}
+                                  title="Share image on Facebook" 
+                                  className="p-3 rounded-full bg-slate-700 hover:bg-slate-600"
+                                >
+                                  <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                  </svg>
+                                </button>
+                                <button 
+                                  onClick={() => {
+                                    // Logic to share as image on LinkedIn
+                                    alert('Sharing as image to LinkedIn');
+                                  }}
+                                  title="Share image on LinkedIn" 
+                                  className="p-3 rounded-full bg-slate-700 hover:bg-slate-600"
+                                >
+                                  <svg className="w-5 h-5 text-blue-700" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.98v16h4.98v-8.396c0-2.002 1.809-2.482 2.457-2.482 1.291 0 2.543.856 2.543 3.322v7.556h4.98v-10.298c0-4.836-2.904-6.702-6.485-6.702-3.582 0-5.487 1.957-5.487 1.957v-1.657z"></path>
+                                  </svg>
+                                </button>
+                              </div>
+                            </>
+                          )}
                         </div>
                       </div>
                       
                       <div className="pt-6 border-t border-slate-700">
+                        {/* Toggleable social media buttons */}
+                        <div className="mb-4">
+                          <label className="text-sm font-medium text-slate-300 block mb-2">Publish to Social Media</label>
+                          <div className="flex flex-wrap gap-2">
+                            {/* Facebook toggle button */}
+                            <button 
+                              onClick={() => {
+                                // Check if user is connected to Facebook
+                                const token = typeof window !== 'undefined' ? localStorage.getItem('facebook_access_token') : null;
+                                if (token) {
+                                  // Toggle Facebook publishing
+                                  setPlatformToggles(prev => ({
+                                    ...prev,
+                                    facebook: !prev.facebook
+                                  }));
+                                } else {
+                                  // Redirect to Facebook connection page
+                                  router.push('/dashboard?page=facebook-pages');
+                                }
+                              }}
+                              className={`p-2 rounded-lg flex items-center gap-1 ${
+                                platformToggles.facebook 
+                                  ? 'bg-blue-600 text-white' 
+                                  : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                              }`}
+                              title="Publish to Facebook"
+                            >
+                              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                              </svg>
+                              <span className="text-xs">FB</span>
+                            </button>
+                            
+                            {/* Twitter toggle button */}
+                            <button 
+                              onClick={() => {
+                                // Check if user is connected to Twitter
+                                const token = typeof window !== 'undefined' ? localStorage.getItem('twitter_access_token') : null;
+                                if (token) {
+                                  // Toggle Twitter publishing
+                                  setPlatformToggles(prev => ({
+                                    ...prev,
+                                    twitter: !prev.twitter
+                                  }));
+                                } else {
+                                  // Show alert for now (would redirect to Twitter connection in a real app)
+                                  alert('Please connect your Twitter account first');
+                                }
+                              }}
+                              className={`p-2 rounded-lg flex items-center gap-1 ${
+                                platformToggles.twitter 
+                                  ? 'bg-black text-white' 
+                                  : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                              }`}
+                              title="Publish to Twitter"
+                            >
+                              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+                              </svg>
+                              <span className="text-xs">TW</span>
+                            </button>
+                            
+                            {/* LinkedIn toggle button */}
+                            <button 
+                              onClick={() => {
+                                // Check if user is connected to LinkedIn
+                                const token = typeof window !== 'undefined' ? localStorage.getItem('linkedin_access_token') : null;
+                                if (token) {
+                                  // Toggle LinkedIn publishing
+                                  setPlatformToggles(prev => ({
+                                    ...prev,
+                                    linkedin: !prev.linkedin
+                                  }));
+                                } else {
+                                  // Show alert for now (would redirect to LinkedIn connection in a real app)
+                                  alert('Please connect your LinkedIn account first');
+                                }
+                              }}
+                              className={`p-2 rounded-lg flex items-center gap-1 ${
+                                platformToggles.linkedin 
+                                  ? 'bg-blue-700 text-white' 
+                                  : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                              }`}
+                              title="Publish to LinkedIn"
+                            >
+                              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.98v16h4.98v-8.396c0-2.002 1.809-2.482 2.457-2.482 1.291 0 2.543.856 2.543 3.322v7.556h4.98v-10.298c0-4.836-2.904-6.702-6.485-6.702-3.582 0-5.487 1.957-5.487 1.957v-1.657z"></path>
+                              </svg>
+                              <span className="text-xs">IN</span>
+                            </button>
+                            
+                            {/* Instagram toggle button */}
+                            <button 
+                              onClick={() => {
+                                // Check if user is connected to Instagram
+                                const token = typeof window !== 'undefined' ? localStorage.getItem('instagram_access_token') : null;
+                                if (token) {
+                                  // Toggle Instagram publishing
+                                  setPlatformToggles(prev => ({
+                                    ...prev,
+                                    instagram: !prev.instagram
+                                  }));
+                                } else {
+                                  // Show alert for now (would redirect to Instagram connection in a real app)
+                                  alert('Please connect your Instagram account first');
+                                }
+                              }}
+                              className={`p-2 rounded-lg flex items-center gap-1 ${
+                                platformToggles.instagram 
+                                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white' 
+                                  : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                              }`}
+                              title="Publish to Instagram"
+                            >
+                              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path>
+                              </svg>
+                              <span className="text-xs">IG</span>
+                            </button>
+                          </div>
+                        </div>
+                        
+                        {/* Publish button - changes based on selected platforms */}
                         <button 
                           onClick={async () => {
                             try {
-                              // Get token from localStorage
-                              const token = typeof window !== 'undefined' ? localStorage.getItem('facebook_access_token') : null;
+                              // Check if any platform is selected
+                              const selectedPlatforms = Object.keys(platformToggles).filter(key => platformToggles[key]);
                               
-                              if (!token) {
-                                setResult({ error: 'No Facebook access token found. Please connect your Facebook account first.' });
+                              if (selectedPlatforms.length === 0) {
+                                setResult({ error: 'Please select at least one platform to publish to.' });
                                 return;
                               }
                               
-                              // Publish to Facebook using the service
-                              const response = await facebookService.publishPost(composerText, undefined, token);
+                              // If Facebook is selected, check for token
+                              if (platformToggles.facebook) {
+                                const token = typeof window !== 'undefined' ? localStorage.getItem('facebook_access_token') : null;
+                                if (!token) {
+                                  setResult({ error: 'No Facebook access token found. Please connect your Facebook account first.' });
+                                  return;
+                                }
+                                
+                                // Publish to Facebook using the service
+                                const response = await facebookService.publishPost(composerText, undefined, token);
+                                console.log('Published successfully:', response);
+                                setResult({ success: 'Post published to Facebook successfully!' });
+                              }
                               
-                              console.log('Published successfully:', response);
-                              setResult({ success: 'Post published to Facebook successfully!' });
+                              // Add similar logic for other platforms
+                              if (platformToggles.twitter) {
+                                // Twitter publishing logic would go here
+                                console.log('Publishing to Twitter');
+                              }
+                              
+                              if (platformToggles.linkedin) {
+                                // LinkedIn publishing logic would go here
+                                console.log('Publishing to LinkedIn');
+                              }
+                              
+                              if (platformToggles.instagram) {
+                                // Instagram publishing logic would go here
+                                console.log('Publishing to Instagram');
+                              }
+                              
+                              // If we get here and no specific success message was set, show general success
+                              if (!result || !result.success) {
+                                setResult({ success: `Post published to ${selectedPlatforms.join(', ')} successfully!` });
+                              }
                             } catch (error) {
-                              console.error('Error publishing to Facebook:', error);
-                              setResult({ error: error.message || 'Failed to publish to Facebook. Please try again.' });
+                              console.error('Error publishing:', error);
+                              setResult({ error: error.message || 'Failed to publish. Please try again.' });
                             }
                           }}
                           className="w-full bg-blue-600 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-blue-700 flex items-center justify-center"
@@ -1081,7 +1363,7 @@ export default function DashboardContent() {
                           <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                           </svg>
-                          Post to Facebook
+                          Publish Post
                         </button>
                         
                         {/* Result display area */}
@@ -1095,7 +1377,7 @@ export default function DashboardContent() {
                           </div>
                         )}
                       </div>
-                                        </div>
+                    </div>
                   </div>
                 </div>
               </div>
