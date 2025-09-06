@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { facebookService } from '@/services/facebookService';
 
 export default function FacebookPostWidget() {
@@ -8,13 +8,45 @@ export default function FacebookPostWidget() {
   const [image, setImage] = useState<string | null>(null);
   const [posting, setPosting] = useState(false);
   const [result, setResult] = useState<{success?: string; error?: string} | null>(null);
+  const [facebookPages, setFacebookPages] = useState<any[]>([]);
   const [selectedPages, setSelectedPages] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock Facebook pages data (in a real app, this would come from the API)
-  const [facebookPages] = useState([
-    { id: 'page1', name: 'My Business Page', selected: true },
-    { id: 'page2', name: 'My Personal Page', selected: false }
-  ]);
+  // Fetch Facebook pages when component mounts
+  useEffect(() => {
+    const fetchFacebookPages = async () => {
+      try {
+        setLoading(true);
+        // Get token from localStorage
+        const token = typeof window !== 'undefined' ? localStorage.getItem('facebook_access_token') : null;
+        
+        if (token) {
+          // Get Facebook pages using the service
+          const pages = await facebookService.getPages();
+          setFacebookPages(pages.map((page: any) => ({
+            ...page,
+            selected: true // Select all pages by default
+          })));
+          setSelectedPages(pages.map((page: any) => page.id));
+        }
+      } catch (error) {
+        console.error('Error fetching Facebook pages:', error);
+        setResult({ error: 'Failed to fetch Facebook pages. Please try reconnecting your account.' });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFacebookPages();
+  }, []);
+
+  const togglePageSelection = (pageId: string) => {
+    if (selectedPages.includes(pageId)) {
+      setSelectedPages(selectedPages.filter(id => id !== pageId));
+    } else {
+      setSelectedPages([...selectedPages, pageId]);
+    }
+  };
 
   const publishToFacebook = async () => {
     if (!content.trim()) {
@@ -31,6 +63,10 @@ export default function FacebookPostWidget() {
       // Get token from localStorage
       const token = typeof window !== 'undefined' ? localStorage.getItem('facebook_access_token') : null;
       
+      if (!token) {
+        throw new Error('No Facebook access token found. Please reconnect your Facebook account.');
+      }
+
       // If we have an image, we need to upload it first
       if (image) {
         // In a real app, we would convert the text to an image here
@@ -39,13 +75,34 @@ export default function FacebookPostWidget() {
         await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate processing time
       }
       
-      // Publish to Facebook using the service
-      const response = await facebookService.publishPost(content, undefined, token);
+      // Publish to selected Facebook pages
+      const results = [];
+      for (const pageId of selectedPages) {
+        try {
+          const response = await facebookService.publishPost(content, pageId, token);
+          results.push({ pageId, success: true, response });
+        } catch (error) {
+          console.error(`Error publishing to page ${pageId}:`, error);
+          results.push({ pageId, success: false, error: error.message });
+        }
+      }
       
-      console.log('Published successfully:', response);
-      setResult({ success: 'Post published to Facebook successfully!' });
-      setContent('');
-      setImage(null);
+      // Check if all posts were successful
+      const allSuccessful = results.every(result => result.success);
+      const successfulPosts = results.filter(result => result.success).length;
+      
+      if (allSuccessful) {
+        console.log('All posts published successfully');
+        setResult({ success: `Post published to ${successfulPosts} Facebook page(s) successfully!` });
+        setContent('');
+        setImage(null);
+      } else {
+        const failedPosts = results.filter(result => !result.success).length;
+        console.log(`${successfulPosts} posts successful, ${failedPosts} posts failed`);
+        setResult({ 
+          error: `Post published to ${successfulPosts} page(s), but failed for ${failedPosts} page(s). Please check your connections.` 
+        });
+      }
     } catch (error) {
       console.error('Error publishing to Facebook:', error);
       setResult({ error: error.message || 'Failed to publish to Facebook. Please try again.' });
@@ -179,24 +236,73 @@ export default function FacebookPostWidget() {
       
       <div className="mb-4">
         <label className="block text-sm font-medium text-slate-300 mb-2">Facebook Pages</label>
-        <div className="space-y-2">
-          {facebookPages.map(page => (
-            <div key={page.id} className="flex items-center">
-              <input
-                type="checkbox"
-                id={`page-${page.id}`}
-                checked={page.selected}
-                onChange={() => {
-                  // Toggle page selection
+        {loading ? (
+          <div className="text-slate-400 text-sm">Loading Facebook pages...</div>
+        ) : facebookPages.length > 0 ? (
+          <div className="space-y-2">
+            {facebookPages.map(page => (
+              <div key={page.id} className="flex items-center">
+                <input
+                  type="checkbox"
+                  id={`page-${page.id}`}
+                  checked={selectedPages.includes(page.id)}
+                  onChange={() => togglePageSelection(page.id)}
+                  className="w-4 h-4 text-blue-600 bg-slate-700 border-slate-600 rounded focus:ring-blue-500"
+                />
+                <label htmlFor={`page-${page.id}`} className="ml-2 text-slate-300 flex items-center">
+                  {page.picture?.data?.url ? (
+                    <img 
+                      src={page.picture.data.url} 
+                      alt={page.name} 
+                      className="w-6 h-6 rounded-full mr-2"
+                    />
+                  ) : (
+                    <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center mr-2">
+                      <span className="text-xs font-bold text-white">{page.name.charAt(0)}</span>
+                    </div>
+                  )}
+                  {page.name}
+                </label>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-slate-400 text-sm">
+            <p>No Facebook pages found.</p>
+            <p className="text-xs mt-1">This could mean:</p>
+            <ul className="list-disc list-inside text-xs mt-1">
+              <li>You don't have any Facebook pages connected to your account</li>
+              <li>Your Facebook account is a personal account without pages</li>
+              <li>Your Facebook token doesn't have permission to access pages</li>
+            </ul>
+            <div className="mt-2">
+              <button 
+                onClick={async () => {
+                  // Try to refresh the pages
+                  try {
+                    setLoading(true);
+                    const token = typeof window !== 'undefined' ? localStorage.getItem('facebook_access_token') : null;
+                    if (token) {
+                      const pages = await facebookService.getPages();
+                      setFacebookPages(pages.map((page: any) => ({
+                        ...page,
+                        selected: true
+                      })));
+                      setSelectedPages(pages.map((page: any) => page.id));
+                    }
+                  } catch (error) {
+                    setResult({ error: error.message || 'Failed to refresh Facebook pages.' });
+                  } finally {
+                    setLoading(false);
+                  }
                 }}
-                className="w-4 h-4 text-blue-600 bg-slate-700 border-slate-600 rounded focus:ring-blue-500"
-              />
-              <label htmlFor={`page-${page.id}`} className="ml-2 text-slate-300">
-                {page.name}
-              </label>
+                className="text-blue-400 hover:text-blue-300 text-xs underline"
+              >
+                Try Again
+              </button>
             </div>
-          ))}
-        </div>
+          </div>
+        )}
       </div>
       
       {result && (

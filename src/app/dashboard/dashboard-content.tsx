@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import { facebookService } from '@/services/facebookService';
 
 // Dynamically import Facebook components to avoid SSR issues
 const FacebookPagesManagement = dynamic(() => import('@/components/FacebookPagesManagement'), {
@@ -76,6 +77,7 @@ export default function DashboardContent() {
   // State for composer functionality
   const [composerText, setComposerText] = useState('This is an editable preview of the post! Type here to see the changes live.');
   const [composerTemplate, setComposerTemplate] = useState('twitter');
+  const [result, setResult] = useState<{success?: string; error?: string} | null>(null);
   
   // State for platform toggles per post
   const [platformToggles, setPlatformToggles] = useState<Record<string, Record<string, boolean>>>({});
@@ -1053,9 +1055,45 @@ export default function DashboardContent() {
                       </div>
                       
                       <div className="pt-6 border-t border-slate-700">
-                        <button className="w-full bg-sky-500 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-sky-600">
-                          Connect Account to Post Image
+                        <button 
+                          onClick={async () => {
+                            try {
+                              // Get token from localStorage
+                              const token = typeof window !== 'undefined' ? localStorage.getItem('facebook_access_token') : null;
+                              
+                              if (!token) {
+                                setResult({ error: 'No Facebook access token found. Please connect your Facebook account first.' });
+                                return;
+                              }
+                              
+                              // Publish to Facebook using the service
+                              const response = await facebookService.publishPost(composerText, undefined, token);
+                              
+                              console.log('Published successfully:', response);
+                              setResult({ success: 'Post published to Facebook successfully!' });
+                            } catch (error) {
+                              console.error('Error publishing to Facebook:', error);
+                              setResult({ error: error.message || 'Failed to publish to Facebook. Please try again.' });
+                            }
+                          }}
+                          className="w-full bg-blue-600 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-blue-700 flex items-center justify-center"
+                        >
+                          <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                          </svg>
+                          Post to Facebook
                         </button>
+                        
+                        {/* Result display area */}
+                        {result && (
+                          <div className={`mt-4 p-3 rounded-lg ${
+                            result.success 
+                              ? 'bg-green-500/20 text-green-300' 
+                              : 'bg-red-500/20 text-red-300'
+                          }`}>
+                            {result.success || result.error}
+                          </div>
+                        )}
                       </div>
                                         </div>
                   </div>

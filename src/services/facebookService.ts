@@ -452,6 +452,44 @@ class FacebookService {
     }
   }
 
+  // Get Facebook pages for the authenticated user
+  async getPages(overrideToken?: string): Promise<any[]> {
+    try {
+      const token = await this.getAccessToken(overrideToken);
+      if (!token) {
+        throw new Error('No Facebook access token available. Please reconnect your Facebook account.');
+      }
+      
+      // Validate the token before attempting to get pages
+      const validation = await this.validateToken(token);
+      if (!validation.valid) {
+        throw new Error(`Facebook access token is invalid: ${validation.error || 'Unknown error'}. Please reconnect your Facebook account.`);
+      }
+      
+      console.log('Fetching Facebook pages with token...');
+      
+      // Get pages from Facebook Graph API
+      const response = await fetch(
+        `${this.baseUrl}/me/accounts?access_token=${token}&fields=name,id,category,picture,fan_count,access_token`
+      );
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        console.error('Facebook pages API error:', data);
+        const errorMessage = data.error?.message || 'Failed to fetch Facebook pages';
+        throw new Error(`Facebook API error: ${errorMessage}`);
+      }
+      
+      console.log('Pages retrieved successfully:', data.data?.length || 0);
+      return data.data || [];
+    } catch (error) {
+      console.error('Error fetching Facebook pages:', error);
+      // Return empty array instead of throwing error to allow graceful degradation
+      return [];
+    }
+  }
+
   // Test Facebook connection
   async testConnection(): Promise<{ connected: boolean; user?: any; pages?: any[]; tokenInfo?: any }> {
     try {
