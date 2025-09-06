@@ -125,7 +125,7 @@ export default function EnhancedFacebookPages() {
             // Clear tokens and reconnect
             localStorage.removeItem('facebook_access_token');
             localStorage.removeItem('facebook_auth_completed');
-            window.location.href = 'http://localhost:3001/auth/callback';
+            window.location.href = `${window.location.origin}/auth/callback`;
           }}
           className="text-xs bg-green-600 hover:bg-green-700 text-white font-semibold px-3 py-1 rounded-lg"
         >

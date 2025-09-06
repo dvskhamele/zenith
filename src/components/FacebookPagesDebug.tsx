@@ -80,7 +80,7 @@ export default function FacebookPagesDebug() {
   };
 
   const reauthenticateWithFacebook = () => {
-    const redirectUrl = 'http://localhost:3001/auth/callback';
+    const redirectUrl = `${window.location.origin}/auth/callback`;
     window.location.href = `https://qfpvsyhtijwxkmyrqswa.supabase.co/auth/v1/authorize?provider=facebook&redirect_to=${redirectUrl}&scopes=pages_show_list,pages_read_engagement,pages_manage_posts,pages_manage_metadata,pages_read_user_content`;
   };
 

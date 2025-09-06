@@ -21,28 +21,22 @@
       "static/chunks/_app-pages-browser_src_app_dashboard_visual-calendar_tsx.js"
     ]
   },
-  "app/dashboard/page.tsx -> ./dashboard-content": {
-    "id": "app/dashboard/page.tsx -> ./dashboard-content",
-    "files": [
-      "static/chunks/_app-pages-browser_src_app_dashboard_dashboard-content_tsx.js"
-    ]
-  },
-  "app/dashboard/simple-dashboard.tsx -> ./visual-calendar": {
-    "id": "app/dashboard/simple-dashboard.tsx -> ./visual-calendar",
-    "files": [
-      "static/chunks/_app-pages-browser_src_app_dashboard_visual-calendar_tsx.js"
-    ]
-  },
-  "app/dashboard/simple-dashboard.tsx -> @/components/FacebookPagesManagement": {
-    "id": "app/dashboard/simple-dashboard.tsx -> @/components/FacebookPagesManagement",
+  "app/dashboard/dashboard-content.tsx -> @/components/FacebookPagesManagement": {
+    "id": "app/dashboard/dashboard-content.tsx -> @/components/FacebookPagesManagement",
     "files": [
       "static/chunks/_app-pages-browser_src_components_FacebookPagesManagement_tsx.js"
     ]
   },
-  "app/dashboard/simple-dashboard.tsx -> @/components/FacebookPostWidget": {
-    "id": "app/dashboard/simple-dashboard.tsx -> @/components/FacebookPostWidget",
+  "app/dashboard/dashboard-content.tsx -> @/components/FacebookPostWidget": {
+    "id": "app/dashboard/dashboard-content.tsx -> @/components/FacebookPostWidget",
     "files": [
       "static/chunks/_app-pages-browser_src_components_FacebookPostWidget_tsx.js"
+    ]
+  },
+  "app/dashboard/page.tsx -> ./dashboard-content": {
+    "id": "app/dashboard/page.tsx -> ./dashboard-content",
+    "files": [
+      "static/chunks/_app-pages-browser_src_app_dashboard_dashboard-content_tsx.js"
     ]
   }
 }

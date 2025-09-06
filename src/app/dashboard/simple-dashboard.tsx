@@ -15,7 +15,8 @@ const VisualCalendar = dynamic(() => import('./visual-calendar'), {
 });
 
 // Dynamically import Facebook components to avoid SSR issues
-const FacebookPagesManagement = dynamic(() => import('@/components/FacebookPagesManagement'), {
+
+const FacebookPagesManagement = dynamic(() => import('../../components/FacebookPagesManagement'), {
   ssr: false,
   loading: () => (
     <div className="flex h-full items-center justify-center">
@@ -24,7 +25,7 @@ const FacebookPagesManagement = dynamic(() => import('@/components/FacebookPages
   )
 });
 
-const FacebookPostWidget = dynamic(() => import('@/components/FacebookPostWidget'), {
+const FacebookPostWidget = dynamic(() => import('../../components/FacebookPostWidget'), {
   ssr: false,
   loading: () => (
     <div className="flex h-full items-center justify-center">

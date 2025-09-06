@@ -33,10 +33,8 @@ export async function loginUser(email: string, password: string) {
 }
 
 export async function loginWithFacebook() {
-  // Use localhost:9999 to match our current development server
-  const redirectUrl = process.env.NODE_ENV === 'development' 
-    ? 'http://localhost:9999/auth/callback'
-    : `${window.location.origin}/auth/callback`;
+  // Use the current origin for the redirect URL
+  const redirectUrl = `${window.location.origin}/auth/callback`;
 
   console.log('Initiating Facebook OAuth with redirect URL:', redirectUrl);
 
