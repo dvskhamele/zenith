@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
@@ -34,6 +34,22 @@ const VisualCalendar = dynamic(() => import('./visual-calendar'), {
 });
 
 export default function DashboardContent() {
+  
+  // Add necessary CSS styles
+  const style = `
+    .twitter-template-bg {
+      background-color: #0f172a;
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      border: 1px solid #334155;
+    }
+    [contenteditable]:focus {
+      outline: none;
+    }
+    .preview-container ::selection {
+      background-color: transparent;
+    }
+  `;
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -49,21 +65,21 @@ export default function DashboardContent() {
   };
   
   const [activePage, setActivePage] = useState(getActivePage());
-
-  // Update URL when page changes
-  const handlePageChange = (page: string) => {
-    setActivePage(page);
-    router.push(`${pathname}?page=${page}`);
-  };
   const [activeSourceTab, setActiveSourceTab] = useState('drafts');
   const [posts, setPosts] = useState<Record<string, any>>({});
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
   const [draftsAndIdeas, setDraftsAndIdeas] = useState([
-    { id: 101, type: 'draft', text: 'The future of B2B marketing is community-led. Here\'s why...' },
-    { id: 102, type: 'draft', text: 'Our latest case study with Acme Corp shows a 300% increase in lead generation.' },
-    { id: 201, type: 'idea', text: 'A thread about the importance of brand voice.' },
-    { id: 202, type: 'idea', text: 'A quick tip video for productivity.' }
+    { id: 101, type: 'draft', text: 'The future of B2B marketing is community-led. Here's why...' },
+    { id: 102, type: 'draft', text: 'Our latest case study with Acme Corp shows a 300% increase in lead generation.' }
   ]);
+  
+  // State for composer functionality
+  const [composerText, setComposerText] = useState('This is an editable preview of the post! Type here to see the changes live.');
+  const [composerTemplate, setComposerTemplate] = useState('twitter');
+  
+  // State for platform toggles per post
+  const [platformToggles, setPlatformToggles] = useState<Record<string, Record<string, boolean>>>({});
+  
   const editorsRef = useRef<Record<string, HTMLTextAreaElement | null>>({});
   const [workspaces] = useState([
     { id: 1, name: 'Innovate Corp', initials: 'IC', color: 'bg-indigo-500' },
@@ -73,9 +89,47 @@ export default function DashboardContent() {
   const [isWorkspaceDropdownOpen, setIsWorkspaceDropdownOpen] = useState(false);
 
   // Update active page when URL changes
-  useState(() => {
+  useEffect(() => {
     setActivePage(getActivePage());
   }, [searchParams]);
+
+  // Update URL when page changes
+  const handlePageChange = (page: string) => {
+    setActivePage(page);
+    router.push(`${pathname}?page=${page}`);
+  };
+  
+  // Function to download image
+  const downloadImage = async () => {
+    const element = document.getElementById('image-preview-area');
+    if (element) {
+      try {
+        // Dynamically import html2canvas
+        const html2canvas = (await import('html2canvas')).default;
+        const canvas = await html2canvas(element, { backgroundColor: '#0f172a' });
+        const link = document.createElement('a');
+        link.download = 'social-post.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      } catch (error) {
+        console.error('Error downloading image:', error);
+      }
+    }
+  };
+  
+  // Function to share as text
+  const shareAsText = (platform: string) => {
+    const text = encodeURIComponent(composerText);
+    let url = '';
+    if (platform === 'twitter') {
+      url = `https://twitter.com/intent/tweet?text=${text}`;
+    } else if (platform === 'linkedin') {
+      url = `https://www.linkedin.com/sharing/share-offsite/?url=&summary=${text}`;
+    }
+    if (url) {
+      window.open(url, '_blank');
+    }
+  };
 
   // Master schedule data
   const masterSchedule = [
@@ -86,7 +140,7 @@ export default function DashboardContent() {
     { id: 5, day: 'Fridays', time: '10:00 AM', category: 'Company Culture', color: 'text-rose-300' },
   ];
 
-  // Generate dates for the next 30 days
+  // Generate dates for the next 7 days (reduced from 30)
   const generateDays = (numDays: number) => {
     const days = [];
     const today = new Date();
@@ -104,7 +158,7 @@ export default function DashboardContent() {
     return days;
   };
 
-  const days = generateDays(30);
+  const days = generateDays(7); // Reduced from 30 to 7 days
 
   const getPostContent = (postId: string) => {
     const post = posts[postId];
@@ -159,6 +213,7 @@ export default function DashboardContent() {
 
   return (
     <div className="flex h-screen bg-slate-900 text-gray-200">
+      <style>{style}</style>
       {/* Sidebar Navigation with labeled icons */}
       <nav className="w-64 bg-slate-950 p-4 flex flex-col justify-between border-r border-slate-800 flex-shrink-0">
         <div>
@@ -467,19 +522,74 @@ export default function DashboardContent() {
                               <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-700/50">
                                 <div className="flex items-center gap-2">
                                   <div className="flex gap-1">
-                                    <button className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white hover:bg-blue-700 transition-colors">
+                                    <button 
+                                      className={`w-6 h-6 rounded-full flex items-center justify-center text-white transition-colors ${platformToggles[postId]?.facebook ? 'bg-blue-600 ring-2 ring-blue-300' : 'bg-slate-600'}`}
+                                      onClick={() => {
+                                        setPlatformToggles(prev => ({
+                                          ...prev,
+                                          [postId]: {
+                                            ...prev[postId],
+                                            facebook: !prev[postId]?.facebook
+                                          }
+                                        }));
+                                      }}
+                                    >
                                       <span className="font-bold text-xs">f</span>
                                     </button>
-                                    <button className="w-6 h-6 rounded-full bg-black flex items-center justify-center text-white hover:bg-gray-800 transition-colors">
+                                    <button 
+                                      className={`w-6 h-6 rounded-full flex items-center justify-center text-white transition-colors ${platformToggles[postId]?.twitter ? 'bg-black ring-2 ring-blue-300' : 'bg-slate-600'}`}
+                                      onClick={() => {
+                                        setPlatformToggles(prev => ({
+                                          ...prev,
+                                          [postId]: {
+                                            ...prev[postId],
+                                            twitter: !prev[postId]?.twitter
+                                          }
+                                        }));
+                                      }}
+                                    >
                                       <span className="font-bold text-xs">X</span>
                                     </button>
-                                    <button className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white hover:opacity-90 transition-opacity">
+                                    <button 
+                                      className={`w-6 h-6 rounded-full flex items-center justify-center text-white transition-opacity ${platformToggles[postId]?.instagram ? 'bg-gradient-to-r from-purple-500 to-pink-500 ring-2 ring-blue-300' : 'bg-slate-600'}`}
+                                      onClick={() => {
+                                        setPlatformToggles(prev => ({
+                                          ...prev,
+                                          [postId]: {
+                                            ...prev[postId],
+                                            instagram: !prev[postId]?.instagram
+                                          }
+                                        }));
+                                      }}
+                                    >
                                       <span className="font-bold text-xs">in</span>
                                     </button>
-                                    <button className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white hover:bg-blue-600 transition-colors">
+                                    <button 
+                                      className={`w-6 h-6 rounded-full flex items-center justify-center text-white transition-colors ${platformToggles[postId]?.linkedin ? 'bg-blue-500 ring-2 ring-blue-300' : 'bg-slate-600'}`}
+                                      onClick={() => {
+                                        setPlatformToggles(prev => ({
+                                          ...prev,
+                                          [postId]: {
+                                            ...prev[postId],
+                                            linkedin: !prev[postId]?.linkedin
+                                          }
+                                        }));
+                                      }}
+                                    >
                                       <span className="font-bold text-xs">in</span>
                                     </button>
-                                    <button className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-black hover:bg-gray-300 transition-colors">
+                                    <button 
+                                      className={`w-6 h-6 rounded-full flex items-center justify-center text-black transition-colors ${platformToggles[postId]?.tiktok ? 'bg-gray-200 ring-2 ring-blue-300' : 'bg-slate-600'}`}
+                                      onClick={() => {
+                                        setPlatformToggles(prev => ({
+                                          ...prev,
+                                          [postId]: {
+                                            ...prev[postId],
+                                            tiktok: !prev[postId]?.tiktok
+                                          }
+                                        }));
+                                      }}
+                                    >
                                       <span className="font-bold text-xs">t</span>
                                     </button>
                                   </div>
@@ -850,28 +960,105 @@ export default function DashboardContent() {
           {/* Composer Page */}
           {activePage === 'composer' && (
             <div className="p-8 overflow-y-auto h-full">
-              <h2 className="text-2xl font-bold text-white mb-6">Create a New Post</h2>
-              <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 max-w-4xl mx-auto">
-                <textarea 
-                  className="w-full h-40 bg-slate-900 text-white text-base p-4 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500 resize-none" 
-                  placeholder="What do you want to talk about?"
-                ></textarea>
-                <div className="mt-4 flex justify-between items-center">
-                  <div className="flex items-center gap-4 text-slate-400">
-                    <button title="Add Image/Video">
-                      <svg className="w-6 h-6 hover:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                      </svg>
-                    </button>
-                    <button title="AI Assistant">
-                      <svg className="w-6 h-6 hover:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-                      </svg>
-                    </button>
+              <div className="w-full max-w-6xl mx-auto">
+                <div className="text-center mb-8">
+                  <h1 className="text-4xl font-extrabold text-white">Turn Your Text into a Sharable Image</h1>
+                  <p className="mt-2 text-lg text-slate-400">Create beautiful, professional-looking posts for social media in seconds.</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  
+                  {/* WYSIWYG Editor and Preview */}
+                  <div className="md:col-span-2">
+                    <div className="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                      <div id="image-preview-area" className="p-2">
+                        {/* Twitter Preview */}
+                        <div className="twitter-template-bg">
+                          <div className="flex items-start gap-3">
+                            <img className="w-12 h-12 rounded-full" src="https://i.pravatar.cc/48?u=innovatecorp" alt="avatar" />
+                            <div className="flex-grow">
+                              <div className="flex items-center gap-2">
+                                <p className="font-bold text-white">Innovate Corp</p>
+                                <p className="text-slate-400">@innovatecorp</p>
+                              </div>
+                              <div 
+                                contentEditable 
+                                className="text-white text-lg p-2 rounded-md min-h-[12rem] outline-none"
+                                onInput={(e) => {
+                                  setComposerText(e.currentTarget.textContent || '');
+                                }}
+                              >
+                                {composerText}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <button className="bg-sky-500 text-white font-semibold px-6 py-2 rounded-lg hover:bg-sky-600">
-                    Publish
-                  </button>
+
+                  {/* Options Panel */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-4">Actions</h3>
+                    <div className="space-y-6 bg-slate-800 p-6 rounded-xl border border-slate-700">
+                      <div>
+                        <label className="text-sm font-medium text-slate-300">1. Select Template</label>
+                        <div 
+                          className="mt-2 bg-slate-900/50 p-3 rounded-md cursor-pointer border-2 border-sky-500"
+                          onClick={() => setComposerTemplate(composerTemplate === 'twitter' ? '' : 'twitter')}
+                        >
+                          <p className="font-medium">Twitter Image</p>
+                          <img src="https://placehold.co/300x150/0f172a/94a3b8?text=Template+Preview" className="rounded-md mt-2 border border-slate-700" />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-sm font-medium text-slate-300 block mb-2">2. Share or Download</label>
+                        <div className="space-y-3">
+                          <button 
+                            onClick={downloadImage}
+                            className="w-full flex items-center justify-center gap-2 bg-emerald-500 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-emerald-600"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Download Image
+                          </button>
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 border-t border-slate-700"></div>
+                            <span className="text-xs text-slate-500">OR</span>
+                            <div className="flex-1 border-t border-slate-700"></div>
+                          </div>
+                          <p className="text-xs text-slate-400 text-center">Share the text directly:</p>
+                          <div className="flex items-center justify-center gap-4">
+                            <button 
+                              onClick={() => shareAsText('twitter')}
+                              title="Share text on Twitter" 
+                              className="p-3 rounded-lg bg-slate-700 hover:bg-slate-600"
+                            >
+                              <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+                              </svg>
+                            </button>
+                            <button 
+                              onClick={() => shareAsText('linkedin')}
+                              title="Share text on LinkedIn" 
+                              className="p-3 rounded-lg bg-slate-700 hover:bg-slate-600"
+                            >
+                              <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.98v16h4.98v-8.396c0-2.002 1.809-2.482 2.457-2.482 1.291 0 2.543.856 2.543 3.322v7.556h4.98v-10.298c0-4.836-2.904-6.702-6.485-6.702-3.582 0-5.487 1.957-5.487 1.957v-1.657z"></path>
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="pt-6 border-t border-slate-700">
+                        <button className="w-full bg-sky-500 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-sky-600">
+                          Connect Account to Post Image
+                        </button>
+                      </div>
+                                        </div>
+                  </div>
                 </div>
               </div>
             </div>

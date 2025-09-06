@@ -14,6 +14,18 @@ export default function VisualCalendar() {
   // State for platform toggles per post
   const [platformToggles, setPlatformToggles] = useState<Record<string, Record<string, boolean>>>({});
   
+  // State for category selection
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  
+  // Available categories
+  const categories = [
+    { id: 'all', name: 'All Categories' },
+    { id: 'marketing', name: '#marketing' },
+    { id: 'b2b', name: '#b2b' },
+    { id: 'industry', name: '#industrynews' },
+    { id: 'product', name: '#product' }
+  ];
+  
   const editorsRef = useRef<Record<string, HTMLTextAreaElement | null>>({});
 
   // Master schedule data
@@ -214,7 +226,7 @@ export default function VisualCalendar() {
                       <div className="mt-2 flex items-center justify-between">
                         <div className="flex gap-1">
                           <button 
-                            className={`w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white transition-colors ${platformToggles[`${day.date}-${slot.id}`]?.facebook ? 'ring-2 ring-blue-300' : 'opacity-50'}`}
+                            className={`w-6 h-6 rounded-full flex items-center justify-center text-white transition-colors ${platformToggles[`${day.date}-${slot.id}`]?.facebook ? 'bg-blue-600 ring-2 ring-blue-300' : 'bg-slate-600'}`}
                             onClick={() => {
                               setPlatformToggles(prev => ({
                                 ...prev,
@@ -228,7 +240,7 @@ export default function VisualCalendar() {
                             <span className="font-bold text-xs">f</span>
                           </button>
                           <button 
-                            className={`w-6 h-6 rounded-full bg-black flex items-center justify-center text-white transition-colors ${platformToggles[`${day.date}-${slot.id}`]?.twitter ? 'ring-2 ring-blue-300' : 'opacity-50'}`}
+                            className={`w-6 h-6 rounded-full flex items-center justify-center text-white transition-colors ${platformToggles[`${day.date}-${slot.id}`]?.twitter ? 'bg-black ring-2 ring-blue-300' : 'bg-slate-600'}`}
                             onClick={() => {
                               setPlatformToggles(prev => ({
                                 ...prev,
@@ -242,7 +254,7 @@ export default function VisualCalendar() {
                             <span className="font-bold text-xs">X</span>
                           </button>
                           <button 
-                            className={`w-6 h-6 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white transition-opacity ${platformToggles[`${day.date}-${slot.id}`]?.instagram ? 'ring-2 ring-blue-300' : 'opacity-50'}`}
+                            className={`w-6 h-6 rounded-full flex items-center justify-center text-white transition-opacity ${platformToggles[`${day.date}-${slot.id}`]?.instagram ? 'bg-gradient-to-r from-purple-500 to-pink-500 ring-2 ring-blue-300' : 'bg-slate-600'}`}
                             onClick={() => {
                               setPlatformToggles(prev => ({
                                 ...prev,
@@ -256,7 +268,7 @@ export default function VisualCalendar() {
                             <span className="font-bold text-xs">in</span>
                           </button>
                           <button 
-                            className={`w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white transition-colors ${platformToggles[`${day.date}-${slot.id}`]?.linkedin ? 'ring-2 ring-blue-300' : 'opacity-50'}`}
+                            className={`w-6 h-6 rounded-full flex items-center justify-center text-white transition-colors ${platformToggles[`${day.date}-${slot.id}`]?.linkedin ? 'bg-blue-500 ring-2 ring-blue-300' : 'bg-slate-600'}`}
                             onClick={() => {
                               setPlatformToggles(prev => ({
                                 ...prev,
@@ -270,7 +282,7 @@ export default function VisualCalendar() {
                             <span className="font-bold text-xs">in</span>
                           </button>
                           <button 
-                            className={`w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-black transition-colors ${platformToggles[`${day.date}-${slot.id}`]?.tiktok ? 'ring-2 ring-blue-300' : 'opacity-50'}`}
+                            className={`w-6 h-6 rounded-full flex items-center justify-center text-black transition-colors ${platformToggles[`${day.date}-${slot.id}`]?.tiktok ? 'bg-gray-200 ring-2 ring-blue-300' : 'bg-slate-600'}`}
                             onClick={() => {
                               setPlatformToggles(prev => ({
                                 ...prev,
@@ -305,48 +317,62 @@ export default function VisualCalendar() {
       {/* Content Sources Panel */}
       <aside className="w-80 bg-slate-950/50 border-l border-slate-800 p-4 flex-shrink-0 flex flex-col">
         <div className="border-b border-slate-700 mb-4">
-          <nav className="-mb-px flex space-x-4">
-            <button 
-              onClick={() => setActiveSourceTab('drafts')}
-              className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
-                activeSourceTab === 'drafts' 
-                  ? 'border-sky-400 text-sky-400' 
-                  : 'border-transparent text-slate-400 hover:text-white'
-              }`}
+          <div className="flex justify-between items-center mb-3">
+            <nav className="-mb-px flex space-x-4">
+              <button 
+                onClick={() => setActiveSourceTab('drafts')}
+                className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
+                  activeSourceTab === 'drafts' 
+                    ? 'border-sky-400 text-sky-400' 
+                    : 'border-transparent text-slate-400 hover:text-white'
+                }`}
+              >
+                Drafts & Ideas
+              </button>
+              <button 
+                onClick={() => setActiveSourceTab('templates')}
+                className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
+                  activeSourceTab === 'templates' 
+                    ? 'border-sky-400 text-sky-400' 
+                    : 'border-transparent text-slate-400 hover:text-white'
+                }`}
+              >
+                Templates
+              </button>
+              <button 
+                onClick={() => setActiveSourceTab('sources')}
+                className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
+                  activeSourceTab === 'sources' 
+                    ? 'border-sky-400 text-sky-400' 
+                    : 'border-transparent text-slate-400 hover:text-white'
+                }`}
+              >
+                Sources
+              </button>
+              <button 
+                onClick={() => setActiveSourceTab('frequency')}
+                className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
+                  activeSourceTab === 'frequency' 
+                    ? 'border-sky-400 text-sky-400' 
+                    : 'border-transparent text-slate-400 hover:text-white'
+                }`}
+              >
+                Frequency
+              </button>
+            </nav>
+          </div>
+          {/* Category Filter */}
+          <div className="mb-3">
+            <select 
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="w-full bg-slate-700 text-white text-sm rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
             >
-              Drafts & Ideas
-            </button>
-            <button 
-              onClick={() => setActiveSourceTab('templates')}
-              className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
-                activeSourceTab === 'templates' 
-                  ? 'border-sky-400 text-sky-400' 
-                  : 'border-transparent text-slate-400 hover:text-white'
-              }`}
-            >
-              Templates
-            </button>
-            <button 
-              onClick={() => setActiveSourceTab('sources')}
-              className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
-                activeSourceTab === 'sources' 
-                  ? 'border-sky-400 text-sky-400' 
-                  : 'border-transparent text-slate-400 hover:text-white'
-              }`}
-            >
-              Sources
-            </button>
-            <button 
-              onClick={() => setActiveSourceTab('frequency')}
-              className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
-                activeSourceTab === 'frequency' 
-                  ? 'border-sky-400 text-sky-400' 
-                  : 'border-transparent text-slate-400 hover:text-white'
-              }`}
-            >
-              Frequency
-            </button>
-          </nav>
+              {categories.map(category => (
+                <option key={category.id} value={category.id}>{category.name}</option>
+              ))}
+            </select>
+          </div>
         </div>
         
         <div className="flex-grow overflow-y-auto space-y-3">
@@ -362,6 +388,14 @@ export default function VisualCalendar() {
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex-grow">
+                      <div className="flex gap-2 mb-2">
+                        <span className="text-xs font-semibold px-2 py-1 rounded-full bg-sky-500/20 text-sky-300">
+                          #marketing
+                        </span>
+                        <span className="text-xs font-semibold px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-300">
+                          #b2b
+                        </span>
+                      </div>
                       <p className="text-sm font-medium">{item.text}</p>
                     </div>
                     <button 
@@ -387,6 +421,14 @@ export default function VisualCalendar() {
                 onDragStart={(e) => handleDragStart(e, 'template', {name: 'twitter'})}
                 className="bg-slate-800 p-3 rounded-md cursor-grab hover:bg-slate-700"
               >
+                <div className="flex gap-2 mb-2">
+                  <span className="text-xs font-semibold px-2 py-1 rounded-full bg-sky-500/20 text-sky-300">
+                    #twitter
+                  </span>
+                  <span className="text-xs font-semibold px-2 py-1 rounded-full bg-purple-500/20 text-purple-300">
+                    #image
+                  </span>
+                </div>
                 <p className="text-sm font-medium">Twitter Image Template</p>
                 <p className="text-xs text-slate-400">Drag onto a post to apply</p>
               </div>
@@ -397,6 +439,14 @@ export default function VisualCalendar() {
           {activeSourceTab === 'sources' && (
             <div>
               <div className="bg-slate-800 p-4 rounded-lg">
+                <div className="flex gap-2 mb-2">
+                  <span className="text-xs font-semibold px-2 py-1 rounded-full bg-amber-500/20 text-amber-300">
+                    #csv
+                  </span>
+                  <span className="text-xs font-semibold px-2 py-1 rounded-full bg-sky-500/20 text-sky-300">
+                    #bulk
+                  </span>
+                </div>
                 <h4 className="font-semibold text-sm flex items-center gap-2">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -410,6 +460,14 @@ export default function VisualCalendar() {
               </div>
               
               <div className="bg-slate-800 p-4 rounded-lg">
+                <div className="flex gap-2 mb-2">
+                  <span className="text-xs font-semibold px-2 py-1 rounded-full bg-green-500/20 text-green-300">
+                    #sheets
+                  </span>
+                  <span className="text-xs font-semibold px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-300">
+                    #sync
+                  </span>
+                </div>
                 <h4 className="font-semibold text-sm flex items-center gap-2 text-green-400">
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM9.5 4h2a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 1 .5-.5zm-3 0h2a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-5a.5.5 0 0 1 .5-.5zm-3 0h2a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 1 .5-.5zm-1.5 7h11a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 1 .5-.5z"/>
@@ -423,6 +481,14 @@ export default function VisualCalendar() {
               </div>
               
               <div className="bg-slate-800 p-4 rounded-lg">
+                <div className="flex gap-2 mb-2">
+                  <span className="text-xs font-semibold px-2 py-1 rounded-full bg-purple-500/20 text-purple-300">
+                    #ai
+                  </span>
+                  <span className="text-xs font-semibold px-2 py-1 rounded-full bg-indigo-500/20 text-indigo-300">
+                    #generator
+                  </span>
+                </div>
                 <h4 className="font-semibold text-sm flex items-center gap-2 text-purple-400">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>

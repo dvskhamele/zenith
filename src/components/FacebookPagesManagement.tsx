@@ -35,6 +35,29 @@ export default function FacebookPagesManagement() {
         
         console.log('Facebook token found in localStorage, length:', storedToken.length);
         
+        // Check if we have cached pages data that's still valid (less than 1 hour old)
+        const cachedPagesData = localStorage.getItem('facebook_pages_cache');
+        const cacheTimestamp = localStorage.getItem('facebook_pages_cache_timestamp');
+        
+        if (cachedPagesData && cacheTimestamp) {
+          const cacheAge = Date.now() - parseInt(cacheTimestamp);
+          const oneHour = 60 * 60 * 1000; // 1 hour in milliseconds
+          
+          if (cacheAge < oneHour) {
+            console.log('Using cached Facebook pages data');
+            const cachedData = JSON.parse(cachedPagesData);
+            setFacebookPages(cachedData.pages);
+            setFacebookToken(storedToken);
+            setConnectionStatus('connected');
+            setLoading(false);
+            return;
+          } else {
+            console.log('Cached Facebook pages data is stale, fetching fresh data');
+            localStorage.removeItem('facebook_pages_cache');
+            localStorage.removeItem('facebook_pages_cache_timestamp');
+          }
+        }
+        
         // Test Facebook connection first
         setConnectionStatus('testing');
         const connectionResult = await facebookService.testConnection();
@@ -64,6 +87,14 @@ export default function FacebookPagesManagement() {
           const pages = await facebookService.getPages();
           setFacebookPages(pages);
           console.log('Pages fetched:', pages.length);
+          
+          // Cache the pages data
+          const cacheData = {
+            pages: pages,
+            timestamp: Date.now()
+          };
+          localStorage.setItem('facebook_pages_cache', JSON.stringify(cacheData));
+          localStorage.setItem('facebook_pages_cache_timestamp', Date.now().toString());
           
           // If we have no pages, show a specific message
           if (pages.length === 0) {
@@ -108,6 +139,10 @@ export default function FacebookPagesManagement() {
       setLoading(true);
       setError(null);
       
+      // Clear the cache when manually refreshing
+      localStorage.removeItem('facebook_pages_cache');
+      localStorage.removeItem('facebook_pages_cache_timestamp');
+      
       // First, do a basic test
       const result = await facebookService.testConnection();
       
@@ -115,6 +150,15 @@ export default function FacebookPagesManagement() {
         setConnectionStatus('connected');
         setFacebookToken(await facebookService.getAccessToken());
         setFacebookPages(result.pages || []);
+        
+        // Cache the fresh data
+        const cacheData = {
+          pages: result.pages || [],
+          timestamp: Date.now()
+        };
+        localStorage.setItem('facebook_pages_cache', JSON.stringify(cacheData));
+        localStorage.setItem('facebook_pages_cache_timestamp', Date.now().toString());
+        
         alert('Successfully connected to Facebook!');
       } else {
         setConnectionStatus('disconnected');
@@ -302,27 +346,37 @@ export default function FacebookPagesManagement() {
       </p>
       
       <div className="mb-4 flex justify-between items-center">
-        <div className="flex gap-2">
+          <div className="flex gap-2">
+            <button
+              onClick={handleTestConnection}
+              className="bg-slate-700 hover:bg-slate-600 text-white font-semibold px-3 py-1 rounded-lg text-sm"
+            >
+              Refresh
+            </button>
+            <button
+              onClick={() => {
+                localStorage.removeItem('facebook_pages_cache');
+                localStorage.removeItem('facebook_pages_cache_timestamp');
+                alert('Cache cleared. Next load will fetch fresh data.');
+              }}
+              className="bg-amber-600 hover:bg-amber-700 text-white font-semibold px-3 py-1 rounded-lg text-sm"
+            >
+              Clear Cache
+            </button>
+            <button
+              onClick={() => setShowDebug(!showDebug)}
+              className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-3 py-1 rounded-lg text-sm"
+            >
+              {showDebug ? 'Hide Debug' : 'Show Debug'}
+            </button>
+          </div>
           <button
-            onClick={handleTestConnection}
-            className="bg-slate-700 hover:bg-slate-600 text-white font-semibold px-3 py-1 rounded-lg text-sm"
+            onClick={handleConnectFacebook}
+            className="bg-green-600 hover:bg-green-700 text-white font-semibold px-3 py-1 rounded-lg text-sm"
           >
-            Refresh
-          </button>
-          <button
-            onClick={() => setShowDebug(!showDebug)}
-            className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-3 py-1 rounded-lg text-sm"
-          >
-            {showDebug ? 'Hide Debug' : 'Show Debug'}
+            Add Pages
           </button>
         </div>
-        <button
-          onClick={handleConnectFacebook}
-          className="bg-green-600 hover:bg-green-700 text-white font-semibold px-3 py-1 rounded-lg text-sm"
-        >
-          Add Pages
-        </button>
-      </div>
       
       {showDebug && (
         <div className="mb-6">
@@ -339,6 +393,16 @@ export default function FacebookPagesManagement() {
               className="bg-slate-700 hover:bg-slate-600 text-white font-semibold px-3 py-1 rounded-lg text-sm"
             >
               Refresh
+            </button>
+            <button
+              onClick={() => {
+                localStorage.removeItem('facebook_pages_cache');
+                localStorage.removeItem('facebook_pages_cache_timestamp');
+                alert('Cache cleared. Next load will fetch fresh data.');
+              }}
+              className="bg-amber-600 hover:bg-amber-700 text-white font-semibold px-3 py-1 rounded-lg text-sm"
+            >
+              Clear Cache
             </button>
             <button
               onClick={handleConnectFacebook}
